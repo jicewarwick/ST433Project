@@ -175,6 +175,7 @@ if (Part7 == 1)
 			hist(UTau5, 50);
 			title(['u = ', num2str(u), 'with sigma = ', num2str(sigma)]);
 			pause();
+
 		end
 	end
 end
