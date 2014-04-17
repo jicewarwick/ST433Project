@@ -30,7 +30,7 @@ lambda = 1;
 
 % keeping all other variables constant
 %--------
-%
+
 if (Part2 == 1)
 	% Varying u:
 	for i = 1:4

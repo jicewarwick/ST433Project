@@ -1,8 +1,6 @@
 % Common Constants:
 N = 1000;
 S0 = 40;
-X0 = 40;
-mu = 4;
 r = 0.03;
 sigma = 1;
 T = 1;
@@ -31,6 +29,7 @@ end
 % Part 3:
 %-----------------------
 K = 40; 
+sigma = 0.9;
 % Monte Carlo Method to valuate call option:
 if (Part3 == 1)
 	%for sigma = [0.1, 0.3, 0.8]
@@ -43,13 +42,13 @@ end
 T = 1;
 if (Part4 == 1)
 	% Fixing T and varying K:
-	for	i = 1:100
+	for	i = 1:80
 		K = i / 2;
 		call_price_by_change_K(i) = CallPricingByMonteCarlo(S0, r, sigma, K, T, N);
 	end
-	x = 0.5:0.5:50;
+	x = 0.5:0.5:40;
 	plot(x, call_price_by_change_K);
-	%pause();
+	pause();
 
 	K = 40;
 	% Fixing K and varying T:
