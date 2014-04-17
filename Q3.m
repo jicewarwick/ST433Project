@@ -9,10 +9,10 @@ time = 0:1/N:T-1/N;
 Part1 = 0;
 Part2 = 0;
 Part3 = 0;
-Part4 = 0;
+Part4 = 1;
 Part5 = 0;
 Part6 = 0;
-Part7 = 1;
+Part7 = 0;
 
 % Question 1
 %----------------------------
@@ -54,6 +54,9 @@ if (Part2 == 1)
 
 	% plot graphs
 	plot(time, Uu);
+			title([Uc]);
+			%name = [3Uc];
+			%print(fig, '-dpdf', name);
 	pause();
 	plot(time, Uc);
 	pause();
@@ -92,7 +95,6 @@ end
 alpha = 4;
 lambda = 2;
 c = 0.5;
-sigma = 1;
 
 if (Part4 == 1)
 	for	u = [0.5, 2, 4]
@@ -101,11 +103,11 @@ if (Part4 == 1)
 			if (notRuined( U5(:,i) ) == 1)
 				UTau5(i) = U5(T*N, i);
 			else
-				UTau5(i) = 0;
+				UTau5(i) = U5(getTau(U5, T, N));
 			end
 		end
 			
-		hist(UTau5, 50);
+		hist(-UTau5, 50);
 		title(['u is ', num2str(u)]);
 		pause();
 	end
@@ -168,14 +170,17 @@ if (Part7 == 1)
 				if (notRuined( U5(:,i) ) == 1)
 					UTau5(i) = U5(T*N, i);
 				else
-					UTau5(i) = 0;
+					UTau5(i) = U5(getTau(U5, T, N));
 				end
 			end
 				
-			hist(UTau5, 50);
+			fig = figure;
+			hist(-UTau5, 50);
 			title(['u = ', num2str(u), 'with sigma = ', num2str(sigma)]);
+			name = ['3.uIs', num2str(u), 'WithSigmaBe', num2str(sigma), '.pdf'];
+			print(fig, '-dpdf', name);
 			pause();
-
+			close(fig);
 		end
 	end
 end
