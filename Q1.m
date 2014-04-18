@@ -7,8 +7,8 @@ T = 1;
 
 % Part Switch:
 Part2 = 0;
-Part3 = 1;
-Part4 = 0;
+Part3 = 0;
+Part4 = 1;
 
 % Part 2:
 %-----------------------
