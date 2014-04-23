@@ -40,6 +40,7 @@ end
 % Part 4:
 %-----------------------
 T = 1;
+sigma = 0.2;
 if (Part4 == 1)
 	% Fixing T and varying K:
 	for	i = 1:80

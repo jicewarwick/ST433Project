@@ -1,15 +1,14 @@
 % Common Costants:
 sigma = 1;
 T = 10;
-N_sim = 100;
+N_int = 10;
+N_sim = 10;
 
 % Part Switch
 Part1 = 0;
-Part2 = 1;
-Part3 = 0;
-Part4 = 0;
+Part2 = 0;
+Part3 = 1;
 Part5 = 0;
-Part6 = 0;
 
 % Question 1
 %----------------------------------
@@ -18,8 +17,8 @@ a = 0;
 X0 = 0;
 
 if (Part1 == 1)
-	X2 = SystemRiskModel(X0, a, sigma, N, T, N_sim);
-	plot(X2);
+	Xa0 = SystemRiskModel(X0, a, sigma, N, T, N_int);
+	plot(Xa0);
 end
 
 
@@ -27,33 +26,60 @@ end
 %----------------------------------
 a = 10;
 if (Part2 == 1)
-	X3 = SystemRiskModel(X0, a, sigma, N, T, N_sim);
-	plot(X3);
+	Xa10 = SystemRiskModel(X0, a, sigma, N, T, N_int);
+	plot(Xa10);
 end
 
-% Question 3
+% Question 3 & 4
 %----------------------------------
 D = -0.5;
 if (Part3 == 1)
+	a_bound = 1:20;
+	sigma_bound = 1:10;
+	N_bound = 1:20;
+	for	i = a_bound
+		a = i;
+		for	sim = 1:N_sim
+			X_a = SystemRiskModel(X0, a, sigma, N, T, N_int);
+			default_time_a(i,sim,:) = getDefaultTime(X_a, D, T, N);
+		end
+		ETTau_a(i) = mean(default_time_a(i,:));
+
+	end
+		DefaultTimeDiffSummary(default_time_a);
+
+	a = 10;
+	for	i = sigma_bound;
+		sigma = i;
+			for	sim = 1:N_sim
+			X_sigma = SystemRiskModel(X0, a, sigma, N, T, N_int);
+			default_time_sigma(i,sim,:) = getDefaultTime(X_a, D, T, N);
+		end
+		ETTau_sigma(i) = mean(default_time_sigma(i,:));
+
+	end
+
+	sigma = 1;
+	for	i = N_bound;
+		N = i;
+	end
+
+	% plot
+	%for	ETau_plot = [ETTau_a, ETTau_sigma, ETTau_N]
+	%end
 	
-
 end
-
-% Question 4
-%----------------------------------
-if (Part4 == 1)
-
-end
-
 
 % Question 5
 %----------------------------------
 if (Part5 == 1)
+	for	i = 1:20
+		for sim = 1:N_sim;
+			num_default(sim) = getNumofDefault(default_time_a(i,sim), T);
+			mean_num_default_bank(i) = mean(num_default);
+			var_num_default_bank(i) = var(num_default);
+		end
+	end
 
 end
 
-% Question 6
-%----------------------------------
-if (Part6 == 1)
-
-end
