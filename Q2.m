@@ -81,10 +81,14 @@ implied_vol = 0.2;
 if (Part6 == 1)
 	barrier = [25, 30, 35];
 	for i = 1:size(barrier)
-		sim_barrier_option_val(i) = DownAndOutOptionPricingByMonteCarlo(S0, r, sigma, K, barrier(i), T, N_sim);
+		sim_down_and_out_option_price(i) = DownAndOutOptionPricingByMonteCarlo(S0, r, sigma, K, barrier(i), T, N_sim);
 	end
 
 end
 
-% Part 1:
+% Part 7:
 %-----------------------
+x_max = 5;
+N_tau_int = 20;
+N_x_int = 100;
+
