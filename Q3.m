@@ -54,23 +54,32 @@ if (Part2 == 1)
 
 	% plot graphs
 	plot(time, Uu);
-			title([Uc]);
-			%name = [3Uc];
-			%print(fig, '-dpdf', name);
-	pause();
+		xlabel('u');
+		ylabel('U');
+		print(fig, '-dpdf', '3.Uu.pdf');
+		pause();
+
 	plot(time, Uc);
-	pause();
+		xlabel('c');
+		ylabel('U');
+		print(fig, '-dpdf', '3.Uc.pdf');
+		pause();
+
 	plot(time, Ulambda);
-	pause();
+		xlabel('lambda');
+		ylabel('U');
+		print(fig, '-dpdf', '3.Ulambda.pdf');
+		pause();
+
 	plot(time, Ualpha);
+		xlabel('alpha')
+		ylabel('U');
+		print(fig, '-dpdf', '3.Ualpha.pdf');
+		pause();
 end
 
 % Question 3
 %----------------------------
-trial_u = [1, 8, 9, 100];
-tiral_c = [1, 2, 5, 10, 100];
-tiral_lambda = [1, 2, 5, 10, 100];
-
 if (Part3 == 1)
 
 	% varying u
@@ -109,6 +118,8 @@ if (Part4 == 1)
 			
 		hist(-UTau5, 50);
 		title(['u is ', num2str(u)]);
+		name = ['3.u is ', num2str(u)];
+		print(fig, '-dpdf', name);
 		pause();
 	end
 end
@@ -144,15 +155,29 @@ if (Part5 == 1)
 	end
 
 	% Plot
-	plot(time, NewUu);
-	pause();
-	plot(time, NewUalpha);
-	pause();
+		plot(time, NewUu);
+		xlabel('u');
+		ylabel('U');
+		print(fig, '-dpdf', '3.NewUu.pdf');
+		pause();
+
 	plot(time, NewUc);
-	pause();
+		xlabel('c');
+		ylabel('U');
+		print(fig, '-dpdf', '3.NewUc.pdf');
+		pause();
+
 	plot(time, NewUlambda);
-	pause();
-	plot(time, NewUsigma);
+		xlabel('lambda');
+		ylabel('U');
+		print(fig, '-dpdf', '3.NewUlambda.pdf');
+		pause();
+
+	plot(time, NewUalpha);
+		xlabel('alpha')
+		ylabel('U');
+		print(fig, '-dpdf', '3.NewUalpha.pdf');
+		pause();
 end
 
 % Question 7

@@ -22,7 +22,10 @@ if (Part2 == 1)
 
 		% hist plot
 		hist(S1, 50);
+		xlabel(log(S_T));
+		print(fig, '-dpdf', '1.logST_hist.pdf');
 		pause();
+		close;
 	end
 end
 
@@ -34,7 +37,6 @@ sigma = 0.9;
 if (Part3 == 1)
 	%for sigma = [0.1, 0.3, 0.8]
 	sim_call_price = CallPricingByMonteCarlo(S0, r, sigma, K, T, N);
-
 end
 
 % Part 4:
@@ -48,7 +50,13 @@ if (Part4 == 1)
 		call_price_by_change_K(i) = CallPricingByMonteCarlo(S0, r, sigma, K, T, N);
 	end
 	x = 0.5:0.5:40;
+
+	% plot
 	plot(x, call_price_by_change_K);
+	xlabel('K');
+	ylabel('Call Price');
+	print(fig, '-dpdf', '1.call_price_by_change_K.pdf');
+
 	pause();
 
 	K = 40;
@@ -59,6 +67,7 @@ if (Part4 == 1)
 	end
 	x = 0.01:0.01:1;
 	plot(x, call_price_by_change_T);
+	print(fig, '-dpdf', '1.call_price_by_change_T.pdf');
 	pause();
 
 end
