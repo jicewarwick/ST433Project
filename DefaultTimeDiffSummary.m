@@ -14,5 +14,7 @@ function [min_diff_default_time mean_diff_default_time, max_diff_default_time] =
 	hold on;
 	plot(1:N_diff_para, min_diff_default_time, 1:N_diff_para, mean_diff_default_time, 1:N_diff_para, max_diff_default_time);
 	diff_legend = legend('Min Defualt Time Difference', 'Mean Defualt Time Difference', 'Max Defualt Time Difference');
+	pause();
+	close;
 
 end

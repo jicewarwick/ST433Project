@@ -1,20 +1,20 @@
 % Common Constants:
 S0 = 40;
 r = 0.03;
-sigma = 0.2;
+sigma = 0.4;
 V0 = sigma^2;
 K = 40;
 T = 1;
 N_int = 1000;
-N_sim = 1000;
+N_sim = 2000;
 
 % Question Switch
 Part1 = 0;
 Part3 = 0;
-Part4 = 0;
-Part5 = 0;
+Part4 = 1;
+Part5 = 1;
 Part6 = 0;
-Part7 = 1;
+Part7 = 0;
 
 % Part 1:
 %-----------------------
@@ -60,33 +60,30 @@ end
 %-----------------------
 if (Part4 == 1)
 	T = 1;
-	K = (30:50)';
+	K = (30:0.1:50)';
 	for	i = 1:size(K);
 		call_price_by_change_K(i) = HestonCallPricingByMonteCarlo(V0, alpha, beta, gamma, S0, r, rho, K(i), T, N_int, N_sim);
 	end
 
 	% plot
-	plot(K, call_price_by_change_K);
+	fig = figure;
+	plot(call_price_by_change_K, K);
 	xlabel('Strike Price');
-	ylebel('Call Option Price');
+	ylabel('Call Option Price');
 	print(fig, '-dpdf', '2.call_price_by_change_K.pdf');
 	pause();
 end
 
 % Part 5:
 %-----------------------
-spot = 40;
-r = 0.03;
-K = 40;
-t = 0;
-T = 1;
-
+K = (30:0.1:50)';
 if (Part5 == 1)
 	implied_vol = getImpliedVolatility(r, spot, K, t, T, call_price_by_change_K);
 	% plot
-	plot(implied_vol, 30:50);
+	K = (30:0.1:50)';
+	plot(K, abs(implied_vol));
 	xlabel('K');
-	ylebel('Implied Volatility');
+	ylabel('Implied Volatility');
 	print(fig, '-dpdf', '2.implied_vol.pdf');
 	pause();
 	close;
@@ -97,7 +94,7 @@ end
 K = 40;
 T = 1;
 %implied_vol = implied_vol(11);
-implied_vol = 0.2;
+%implied_vol = 0.2;
 
 if (Part6 == 1)
 	barrier = [25, 30, 35]';

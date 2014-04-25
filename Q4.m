@@ -3,7 +3,6 @@ sigma = 1;
 T = 10;
 N_int = 10;
 N_sim = 10;
-fig = figure;
 
 % Part Switch
 Part1 = 0;
@@ -49,17 +48,25 @@ end
 %----------------------------------
 D = -0.5;
 if (Part3 == 1)
-	a_bound = (1:20)';
+	a_bound = (1:0.2:20)';
 	sigma_bound = (1:10)';
 	N_bound = (1:20)';
+
 	for	i = 1:size(a_bound)
 		a = a_bound(i);
 		for	sim = 1:N_sim
 			X_a = SystemRiskModel(X0, a, sigma, N, T, N_int);
-			default_time_a(i,sim,:) = getDefaultTime(X_a, D, T, N);
+			default_time_a(i,sim,:) = getDefaultTime(X_a, D, T, N_int);
 		end
 		ETTau_a(i) = mean(default_time_a(i,:));
 	end
+	% plot
+	plot(ETTau_a, a_bound);
+	xlabel('a');
+	ylabel('Expected Default Time');
+	print(fig, '-dpdf', '4.expected_default_time_vs_a.pdf');
+	pause();
+	close;
 	DefaultTimeDiffSummary(default_time_a);
 
 	a = 10;
@@ -67,22 +74,34 @@ if (Part3 == 1)
 		sigma = sigma_bound(i);
 		for	sim = 1:N_sim
 			X_sigma = SystemRiskModel(X0, a, sigma, N, T, N_int);
-			default_time_sigma(i,sim,:) = getDefaultTime(X_sigma, D, T, N);
+			default_time_sigma(i,sim,:) = getDefaultTime(X_sigma, D, T, N_int);
 		end
 		ETTau_sigma(i) = mean(default_time_sigma(i,:));
 	end
+	% plot
+	plot(ETTau_sigma, sigma_bound);
+	xlabel('sigma');
+	ylabel('Expected Default Time');
+	print(fig, '-dpdf', '4.expected_default_time_vs_sigma.pdf');
+	pause();
+	close;
 	DefaultTimeDiffSummary(default_time_sigma);
 
 	sigma = 1;
 	for	i = 1:size(N_bound)
 		N = N_bound(i);
-		default_time_N = zeros(i, N_sim, size(N_bound));
 		for	sim = 1:N_sim
 			X_N = SystemRiskModel(X0, a, sigma, N, T, N_int);
-			default_time_N(i,sim,:) = getDefaultTime(X_N, D, T, N);
+			default_time_N(i,sim) = mean(getDefaultTime(X_N, D, T, N_int));
 		end
 		ETTau_N(i) = mean(default_time_N(i,:));
 	end
+	plot(ETTau_N, N_bound);
+	xlabel('N');
+	ylabel('Expected Default Time');
+	print(fig, '-dpdf', '4.expected_default_time_vs_N.pdf');
+	pause();
+	close;
 	DefaultTimeDiffSummary(default_time_N);
 
 	% plot
@@ -93,12 +112,12 @@ if (Part3 == 1)
 		plot(ETau_plot(i));
 		xlabel(x_label(i));
 		ylabel('Expected Default Time');
-		print(fig, '-dpdf', ['4.expected_default_time_vs_', x_label, '.pdf']);
+		print(fig, '-dpdf', ['4.expected_default_time_vs_', x_label(i), '.pdf']);
 		pause();
 		close;
 	end
-	
 end
+
 
 % Question 5
 %----------------------------------
