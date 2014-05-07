@@ -1,4 +1,5 @@
 fig/
 *.log
 *.aux
+*.out
 report.pdf

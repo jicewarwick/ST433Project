@@ -1,18 +1,17 @@
-%------------------------------------------------------------
-\documentclass[a4paper,draft, 11pt]{article}
-%----------------------------------------------------------
+\documentclass[a4paper, 11pt]{article}
 
 \usepackage[utf8x]{inputenc}
 \usepackage{amsmath,amssymb,amsthm,amsfonts}
 \usepackage[left=3.5cm, right=2cm]{geometry}
 \usepackage{fullpage}
 \usepackage{amsmath}
-%\usepackage{subfigure}
+\usepackage{subfig}
+%\usepackage{subcaption}
 \usepackage[pdftex]{graphicx}%image support.
 \usepackage{comment}
 \usepackage{natbib}
 \usepackage{fancyhdr}
-%\usepackage[hidelinks]{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage{setspace}
 
 \onehalfspacing
@@ -23,6 +22,8 @@
 \lhead{}\chead{}\rhead{17746}
 \lfoot{}\cfoot{\thepage}\rfoot{}
 
+\graphicspath{{./fig}}
+
 \begin{document}
 
 \title{Department of Statistics 2014\\ {\bf Project in Computational Finance and Insurance}\\ {\small Submitted for the Master of Science, London School of Economics} }
@@ -30,7 +31,7 @@
 %\date{}
 \maketitle
 \vfill
-\section{Abstract}
+\section*{Abstract}
 This project will simlulate several interesting models used in financial markets. We will start with the famous Black-Scholes' model with constant volatility. Secondly, Heston model will introduce stochastic volatility into the Black-Scholes' system. We will discuss some application of these models with respect to option pricing.
 We will also discuss a simple model in ruin theory and systematic risk in banking system from stochastic approach.
 
@@ -38,13 +39,53 @@ We will also discuss a simple model in ruin theory and systematic risk in bankin
 
 \section{Introduction}
 % why simulation, benefit, ??
+% choose matlab
 The report will focus mainly on three topics 
 
 \section{Black-Scholes' Economy}
-The most basic model in the stochastic approach to model stock price is the Black-Schole-Merton Model. In Black-Scholes' economy, the stock price $(S_t)$ is given as
+The most basic model from the stochastic approach to model stock price is to use the Black-Schole-Merton Model. In this model, the stock price $(S_t)$ is given as
 $$S_t = S_0 exp\left( (r - \frac{\sigma^2}{2} )t + \sigma W_t \right)$$
-where $r$ is the interest rate, sigma is the volatility of that stock and $W$ is the standard Brownian motion.
+where $r$ is the interest rate, $\sigma$ is the volatility of that stock and $W$ is the standard Brownian motion. Therefore the logarithm of the stock price is a Brownian motion with drift, namely 
+$$\log(S_t) = \log(S_0) \times ((r - \frac{\sigma^2}{2} )t + \sigma W_t )$$
 
+As we will see later, computer simulation of the Brownian motion is crucial for some numerical methods to evaluate some financial assets, such as exotic options. 
+
+There are several ways to simulate a standard Brownian motion. A straightforward approach is to use the first order Euler scheme and discretise the unit time to $N_{int}$ intervals. By the property of independent and stationary increments of Brownian motion, we can determine the distribution of the process at each point given its previous location. Mathematically, we denote $X$ as $\log(S_t)$ and
+$$ \hat{X}_{(j+1)h} = \hat{X}_{jh} +( r-\frac{\sigma^2}{2})h +\sqrt{h} \sigma Z_{j+1}\  \forall j = 0, 1, \dots $$
+where $h = \frac{1}{N_{int}}$ is the time interval between every sampling of the process and $Z_j$s are independent and identically distributed normal random variables with mean 0 and variance 1.
+
+Given the same initial price and interest rate, the following figure(Figure. \ref{fig:1.stock_vs_vol})gives the histgram the the $\log(S_t)$ buy several different volatilities. 
+
+\begin{figure}
+	\centering
+	%\begin{subfigure}
+	%	
+	%\end{subfigure}[t]{0.5\textwidth}
+	\subfigure[$\sigma = 0.2$]{
+		\includegraphics[scale=0.4]{./fig/{1.logST_hist_sigma0.2}.pdf}
+	}
+
+	\subfigure[$\sigma = 0.4$]{
+		\includegraphics[scale=0.4]{./fig/{1.logST_hist_sigma0.4}.pdf}
+	}
+
+	\subfigure[$\sigma = 0.6$]{
+		\includegraphics[scale=0.4]{./fig/{1.logST_hist_sigma0.6}.pdf}
+	}
+
+	\subfigure[$\sigma = 0.8$]{
+		\includegraphics[scale=0.4]{./fig/{1.logST_hist_sigma0.8}.pdf}
+	}
+
+	\caption{log stock price with different volatilities}
+	\label{fig:1.stock_vs_vol}
+\end{figure}
+
+\section{Heston Model}
+
+\section{Ruin Probability in Finite Time}
+
+\section{Systematic Risk}
 
 
 \section{conclusion}
