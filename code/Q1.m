@@ -71,4 +71,3 @@ if (Part4 == 1)
 	pause();
 
 end
-

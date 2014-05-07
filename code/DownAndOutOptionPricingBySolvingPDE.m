@@ -1,4 +1,4 @@
-function [V_t, V_s, V] = DownAndOutOptionPricingBySolvingPDE(r, sigma, K, barrier, T, x_max, N_tau_int, N_x_int)
+%function [V_t, V_s, V] = DownAndOutOptionPricingBySolvingPDE(r, sigma, K, barrier, T, x_max, N_tau_int, N_x_int)
 	% solving Heat Equation:
 	lambda = (1/N_tau_int) / ( (1/N_x_int) ^2 );
 
@@ -10,19 +10,22 @@ function [V_t, V_s, V] = DownAndOutOptionPricingBySolvingPDE(r, sigma, K, barrie
 
 	a = -0.5 * ((2*r) / (sigma^2) - 1);
 	b = -a^2 - 2*r/(sigma^2);
+	coeff = 0.5*(1+2*r/sigma/sigma);
 
-	% barrier condition in the heat equation
+	% left barrier condition in the heat equation
 	knocked_out = log(barrier / K);
 	knocked_out_index = floor(x_max*N_x_int + knocked_out * N_x_int);
 
 	u = zeros(tau_dim, x_dim);
 	% initial boundary condiiton at bottom of 68
 	u(1,:) = exp(-a * x) .* max(exp(x) - 1, 0);
+	
 	u(1,1:knocked_out_index) = 0;
 
+	% construct the transformation matrix according to P89
 	A = (1+lambda) * eye(x_dim, x_dim);
-	A(1,2) = -lambda;
-	A(x_dim, x_dim-1) = -lambda;
+	A(1,2) = -lambda/2;
+	A(x_dim, x_dim-1) = -lambda/2;
 	for i = 2:x_dim-1
 		A(i,i-1) = -lambda/2;
 		A(i,i+1) = -lambda/2;
@@ -30,16 +33,18 @@ function [V_t, V_s, V] = DownAndOutOptionPricingBySolvingPDE(r, sigma, K, barrie
 	Ainv = inv(A);
 
 	B = (1-lambda) * eye(x_dim, x_dim); 
-	B(1,2) = lambda;
-	B(x_dim, x_dim-1) = lambda;
+	B(1,2) = lambda/2;
+	B(x_dim, x_dim-1) = lambda/2;
 	for i = 2:x_dim-1
 		B(i,i-1) = lambda/2;
 		B(i,i+1) = lambda/2;
 	end
 
-	for i = 1:tau_dim
+	for i = 1:tau_dim-1
 		u(i+1,:) = (Ainv*B)*(u(i,:)');
 		u(i+1,1:knocked_out_index) = 0;
+		%u(i+1,x_dim) = exp(0.5*x_max * (1+ 2*r/(sigma^2)) + tau(i) * 0.25 * (1+2*r/(sigma^2)^2 ));
+		u(i+1,x_dim) = exp(x_max * coeff + tau(i+1) * coeff^2);
 	end
 
 	% translate back into black and scholes price on page 79
@@ -55,4 +60,4 @@ function [V_t, V_s, V] = DownAndOutOptionPricingBySolvingPDE(r, sigma, K, barrie
 	V_t = repmat(V_t',1,x_dim);
 	V_s = repmat(V_s,tau_dim,1);
 	mesh(V_t, V_s, V);
-end
+%end

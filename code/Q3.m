@@ -1,9 +1,10 @@
 % Common constants:
-N = 1000;
+N_int= 1000;
 N_trial = 20;
-sim_N = 1000;
+N_sim = 1000;
 T = 5;
 time = 0:1/N:T-1/N;
+fig = figure;
 
 % Question Stwich
 Part1 = 0;
@@ -17,7 +18,7 @@ Part7 = 0;
 % Question 1
 %----------------------------
 if (Part1 == 1)
-	expRand = -log(1-rand(N));
+	expRand = -log(1-rand(N_sim));
 	hist(expRand,100);
 end
 % Question 2
@@ -84,19 +85,18 @@ if (Part3 == 1)
 
 	% varying u
 	for i = 1:N_trial
-		ruinProbU(i) = ruinProbSimulation(i, alpha, c, lambda, T, N, sim_N);
+		ruinProbU(i) = ruinProbSimulation(i, alpha, c, lambda, T, N, N_sim);
 	end
 
 	% varying c
 	for i = 1:N_trial
-		ruinProbC(i) = ruinProbSimulation(u, alpha, i, lambda, T, N, sim_N);
+		ruinProbC(i) = ruinProbSimulation(u, alpha, i, lambda, T, N, N_sim);
 	end
 
 	% varying lambda
 	for i = 1:N_trial
-		ruinProbLambda(i) = ruinProbSimulation(u, alpha, c, i, T, N, sim_N);
+		ruinProbLambda(i) = ruinProbSimulation(u, alpha, c, i, T, N, N_sim);
 	end
-
 end
 
 % Question 4
@@ -106,19 +106,20 @@ lambda = 2;
 c = 0.5;
 
 if (Part4 == 1)
-	for	u = [0.5, 2, 4]
-		for	i= 1:sim_N
-			U5(:,i) = getU(u, alpha, c, lambda, T, N);
-			if (notRuined( U5(:,i) ) == 1)
-				UTau5(i) = U5(T*N, i);
+	u = [0.5, 2, 4]';
+	for i = 1:size(u)
+		for	j = 1:N_sim
+			U5 = getU(u(i), alpha, c, lambda, T, N);
+			if (notRuined( U5 ) == 1)
+				UTau5(j) = U5(T*N_sim);
 			else
-				UTau5(i) = U5(getTau(U5, T, N));
+				UTau5(j) = U5(N_int*getTau(U5, T, N));
 			end
 		end
 			
 		hist(-UTau5, 50);
-		title(['u is ', num2str(u)]);
-		name = ['3.u is ', num2str(u)];
+		title(['u is ', num2str(u(i))]);
+		name = ['3.u is ', num2str(u(i))];
 		print(fig, '-dpdf', name);
 		pause();
 	end
@@ -190,7 +191,7 @@ sigma = 0.3;
 if (Part7 == 1)
 	for	sigma = [0.3, 1]
 		for	u = [0.5, 2, 4]
-			for	i= 1:sim_N
+			for	i= 1:N_sim
 				U5(:,i) = getNewU(u, alpha, c, lambda, sigma, T, N);
 				if (notRuined( U5(:,i) ) == 1)
 					UTau5(i) = U5(T*N, i);

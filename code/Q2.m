@@ -11,8 +11,8 @@ N_sim = 2000;
 % Question Switch
 Part1 = 0;
 Part3 = 0;
-Part4 = 1;
-Part5 = 1;
+Part4 = 0;
+Part5 = 0;
 Part6 = 0;
 Part7 = 0;
 
