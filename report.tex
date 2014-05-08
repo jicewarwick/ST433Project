@@ -5,9 +5,10 @@
 \usepackage[left=3.5cm, right=2cm]{geometry}
 \usepackage{fullpage}
 \usepackage{amsmath}
-\usepackage{subfig}
-%\usepackage{subcaption}
+%\usepackage{subfig}
 \usepackage[pdftex]{graphicx}%image support.
+\usepackage{caption}
+\usepackage{subcaption}
 \usepackage{comment}
 \usepackage{natbib}
 \usepackage{fancyhdr}
@@ -54,31 +55,30 @@ There are several ways to simulate a standard Brownian motion. A straightforward
 $$ \hat{X}_{(j+1)h} = \hat{X}_{jh} +( r-\frac{\sigma^2}{2})h +\sqrt{h} \sigma Z_{j+1}\  \forall j = 0, 1, \dots $$
 where $h = \frac{1}{N_{int}}$ is the time interval between every sampling of the process and $Z_j$s are independent and identically distributed normal random variables with mean 0 and variance 1.
 
-Given the same initial price and interest rate, the following figure(Figure. \ref{fig:1.stock_vs_vol})gives the histgram the the $\log(S_t)$ buy several different volatilities. 
-
-\begin{figure}
-	\centering
-	%\begin{subfigure}
-	%	
-	%\end{subfigure}[t]{0.5\textwidth}
-	\subfigure[$\sigma = 0.2$]{
-		\includegraphics[scale=0.4]{./fig/{1.logST_hist_sigma0.2}.pdf}
-	}
-
-	\subfigure[$\sigma = 0.4$]{
-		\includegraphics[scale=0.4]{./fig/{1.logST_hist_sigma0.4}.pdf}
-	}
-
-	\subfigure[$\sigma = 0.6$]{
-		\includegraphics[scale=0.4]{./fig/{1.logST_hist_sigma0.6}.pdf}
-	}
-
-	\subfigure[$\sigma = 0.8$]{
-		\includegraphics[scale=0.4]{./fig/{1.logST_hist_sigma0.8}.pdf}
-	}
-
-	\caption{log stock price with different volatilities}
-	\label{fig:1.stock_vs_vol}
+Given the same initial price and interest rate, the following figure(Figure. \ref{fig:1.stock_vs_vol})gives the histgram the the $\log(S_t)$ by several different volatilities. 
+\begin{figure}[t]
+        \centering
+        \begin{subfigure}[t]{0.45\textwidth}
+                \includegraphics[width=\textwidth]{./fig/{1.logST_hist_sigma0.2}.pdf}
+                \caption{$\sigma = 0.2$}
+        \end{subfigure}%
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[t]{0.45\textwidth}
+                \includegraphics[width=\textwidth]{./fig/{1.logST_hist_sigma0.4}.pdf}
+                \caption{$\sigma = 0.4$}
+        \end{subfigure}
+		~
+        \begin{subfigure}[t]{0.45\textwidth}
+                \includegraphics[width=\textwidth]{./fig/{1.logST_hist_sigma0.6}.pdf}
+                \caption{$\sigma = 0.6$}
+        \end{subfigure}
+        \begin{subfigure}[t]{0.45\textwidth}
+                \includegraphics[width=\textwidth]{./fig/{1.logST_hist_sigma0.8}.pdf}
+                \caption{$\sigma = 0.8$}
+        \end{subfigure}
+        \caption{log stock price with different volatilities}
+		\label{fig:1.stock_vs_vol}
 \end{figure}
 
 \section{Heston Model}
@@ -88,7 +88,7 @@ Given the same initial price and interest rate, the following figure(Figure. \re
 \section{Systematic Risk}
 
 
-\section{conclusion}
+\section{Conclusion}
 
 
 
