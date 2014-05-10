@@ -1,3 +1,4 @@
+% -----------------------------------------
 \documentclass[a4paper, 11pt]{article}
 
 \usepackage[utf8x]{inputenc}
@@ -5,7 +6,6 @@
 \usepackage[left=3.5cm, right=2cm]{geometry}
 \usepackage{fullpage}
 \usepackage{amsmath}
-%\usepackage{subfig}
 \usepackage[pdftex]{graphicx}%image support.
 \usepackage{caption}
 \usepackage{subcaption}
@@ -14,6 +14,31 @@
 \usepackage{fancyhdr}
 \usepackage[hidelinks]{hyperref}
 \usepackage{setspace}
+\usepackage{upquote}
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+	language=Matlab,
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	numberstyle=\tiny\color{gray},
+	keywordstyle=\color{blue},
+	commentstyle=\color{dkgreen},
+	stringstyle=\color{mauve},
+	breaklines=true,
+	breakatwhitespace=true
+	tabsize=2
+}
+\newcommand{\includecode}[1]{\lstinputlisting[caption=#1, escapechar=,]{./code/#1}}
 
 \onehalfspacing
 
@@ -26,7 +51,6 @@
 \graphicspath{{./fig}}
 
 \begin{document}
-
 \title{Department of Statistics 2014\\ {\bf Project in Computational Finance and Insurance}\\ {\small Submitted for the Master of Science, London School of Economics} }
 \author{Candidate Number: \bf 17746}
 %\date{}
@@ -45,9 +69,9 @@ The report will focus mainly on three topics
 
 \section{Black-Scholes' Economy}
 The most basic model from the stochastic approach to model stock price is to use the Black-Schole-Merton Model. In this model, the stock price $(S_t)$ is given as
-$$S_t = S_0 exp\left( (r - \frac{\sigma^2}{2} )t + \sigma W_t \right)$$
+$$S_t = S_0 \exp\left( (r - \frac{\sigma^2}{2} )t + \sigma W_t \right)$$
 where $r$ is the interest rate, $\sigma$ is the volatility of that stock and $W$ is the standard Brownian motion. Therefore the logarithm of the stock price is a Brownian motion with drift, namely 
-$$\log(S_t) = \log(S_0) \times ((r - \frac{\sigma^2}{2} )t + \sigma W_t )$$
+$$\log(S_t) = \log(S_0) + ((r - \frac{\sigma^2}{2} )t + \sigma W_t )$$
 
 As we will see later, computer simulation of the Brownian motion is crucial for some numerical methods to evaluate some financial assets, such as exotic options. 
 
@@ -55,7 +79,11 @@ There are several ways to simulate a standard Brownian motion. A straightforward
 $$ \hat{X}_{(j+1)h} = \hat{X}_{jh} +( r-\frac{\sigma^2}{2})h +\sqrt{h} \sigma Z_{j+1}\  \forall j = 0, 1, \dots $$
 where $h = \frac{1}{N_{int}}$ is the time interval between every sampling of the process and $Z_j$s are independent and identically distributed normal random variables with mean 0 and variance 1.
 
-Given the same initial price and interest rate, the following figure(Figure. \ref{fig:1.stock_vs_vol})gives the histgram the the $\log(S_t)$ by several different volatilities. 
+Given the same initial price and interest rate, the following figure(Figure. \ref{fig:1.stock_vs_vol})gives the histgram the the $\frac{1}{\sigma}\log(S_t)$ by several different volatilities. As we can see from the figures, as the volatility increases, the mean started to decrease and the spread of the distribution remained similar. This is also clear from its formulation as 
+$$\frac{1}{\sigma}\log(S_t) = \log(S_0) + (\frac{r}{\sigma} - \frac{\sigma}{2} )t + W_t$$
+and increase in volatility negatively affect the linear drift term in above formula.
+
+For some exotic options, direct pricing using risk neutral measure method could be difficult. Another way is to use Monte Carlo simulation. A simple implementation of this method is to price a European call option. 
 
 \begin{figure}[t]
         \centering
@@ -97,5 +125,33 @@ Given the same initial price and interest rate, the following figure(Figure. \re
 %\bibliographystyle{agsm}
 %\bibliography{Reference}
 
+\section{Appendix}
+Matlab codes used in the project:
+\includecode{Q1.m}
+\includecode{GeometricBrownianMotion.m}
+\includecode{CallValue.m}
+\includecode{CallPricingByMonteCarlo.m}
+\includecode{Q2.m}
+\includecode{getHestonSimulation.m}
+\includecode{HestonCallPricingByMonteCarlo.m}
+\includecode{getImpliedVolatility.m}
+\includecode{DownAndOutOptionValue.m}
+\includecode{DownAndOutOptionPricingByMonteCarlo.m}
+\includecode{DownAndOutOptionPricingBySolvingPDE.m}
+\includecode{Q3.m}
+\includecode{CompoundPoissonGenerator.m}
+\includecode{getU.m}
+\includecode{ruinProbSimulation.m}
+\includecode{getTau.m}
+\includecode{getNewU.m}
+\includecode{ComputeETTau.m}
+\includecode{isRuined.m}
+\includecode{notRuined.m}
+\includecode{SystemRiskModel.m}
+\includecode{getDefaultTime.m}
+\includecode{DefaultTimeDiffSummary.m}
+\includecode{getNumofDefault.m}
+\includecode{saveTightFigure.m}
+\includecode{LSummary.m}
 \end{document}
 

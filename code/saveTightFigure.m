@@ -1,3 +1,8 @@
+% This is a script downloaded from http://www.mathworks.co.uk/matlabcentral/fileexchange/
+% 34024-get-rid-of-the-white-margin-in-saveas-output/content/saveTightFigure.m
+% This functioin produces figures with little margin.
+% It is used in the main execution function to produce usable figure for the report.
+% Full credit goes to its original author.
 function saveTightFigure(h,outfilename)
 % SAVETIGHTFIGURE(OUTFILENAME) Saves the current figure without the white
 %   space/margin around it to the file OUTFILENAME. Output file type is

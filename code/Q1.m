@@ -13,7 +13,7 @@ Part4 = 0;
 % Part 2:
 %-----------------------
 if (Part2 == 1)
-	for	i = 1:10
+	for	i = 2:2:10
 		for	j = 1:N_sim
 			GB(i, j, :) = GeometricBrownianMotion(S0, r, i / 10, T, N_sim);
 			S1(j) = GB(i, j, T*N_sim+1);
@@ -22,8 +22,8 @@ if (Part2 == 1)
 
 		% hist plot
 		fig = figure;
-		hist(S1, 50);
-		xlabel('log(S_T)');
+		hist(plot_data, 50);
+		xlabel('log(S_T)/\sigma');
 		name = [ '1.logST_hist_sigma', num2str(i/10), '.pdf'];
 		saveTightFigure(name);
 		pause();
