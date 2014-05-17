@@ -71,9 +71,16 @@ end
 %-----------------------
 if (Part4 == 1)
 	K = (30:50)';
-	for	i = 1:size(K);
-		call_price_by_change_K(i) = HestonCallPricingByMonteCarlo(V0, alpha, beta, gamma, S0, r, rho, K(i), T, N_int, N_sim);
+	for j = 1:N_sim
+			St(:,j) = getHestonSimulation(V0, alpha, beta, gamma, S0, r, rho, K, T, N_int);
 	end
+	for	i = 1:size(K)
+		for j = 1:N_sim
+			call_val(i,j) = exp(-r*T) * max(St(T*N_int+1,j)-K(i), 0);
+		end
+		call_price_by_change_K(i) = mean(call_val(i,:));
+	end
+
 
 	% plot
 	fig = figure;
