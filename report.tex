@@ -62,28 +62,31 @@ We will also discuss a simple model in ruin theory and systematic risk in bankin
 
 \newpage
 
+\tableofcontents
+\vfill
 \section{Introduction}
+% what is Monte Carlo
 % why simulation, benefit, ??
 % choose matlab
 The report will focus mainly on three topics 
 
-\section{Black-Scholes' Economy}
+\section{Black-Scholes' Model}
 The most basic model from the stochastic approach to model stock price is to use the Black-Schole-Merton Model. In this model, the stock price $(S_t)$ is given as
 $$S_t = S_0 \exp\left( (r - \frac{\sigma^2}{2} )t + \sigma W_t \right)$$
 where $r$ is the interest rate, $\sigma$ is the volatility of that stock and $W$ is the standard Brownian motion. Therefore the logarithm of the stock price is a Brownian motion with drift, namely 
 $$\log(S_t) = \log(S_0) + ((r - \frac{\sigma^2}{2} )t + \sigma W_t )$$
 
-As we will see later, computer simulation of the Brownian motion is crucial for some numerical methods to evaluate some financial assets, such as exotic options. 
+As we will see later, computer simulation of the Brownian motion is crucial for some numerical methods to evaluate some financial assets, such as exotic options.\\
 
 There are several ways to simulate a standard Brownian motion. A straightforward approach is to use the first order Euler scheme and discretise the unit time to $N_{int}$ intervals. By the property of independent and stationary increments of Brownian motion, we can determine the distribution of the process at each point given its previous location. Mathematically, we denote $X$ as $\log(S_t)$ and
 $$ \hat{X}_{(j+1)h} = \hat{X}_{jh} +( r-\frac{\sigma^2}{2})h +\sqrt{h} \sigma Z_{j+1}\  \forall j = 0, 1, \dots $$
-where $h = \frac{1}{N_{int}}$ is the time interval between every sampling of the process and $Z_j$s are independent and identically distributed normal random variables with mean 0 and variance 1.
+where $h = \frac{1}{N_{int}}$ is the time interval between every sampling of the process and $Z_j$s are independent and identically distributed normal random variables with mean 0 and variance 1.\\
 
 Given the same initial price and interest rate, the following figure(Figure. \ref{fig:1.stock_vs_vol})gives the histgram the the $\frac{1}{\sigma}\log(S_t)$ by several different volatilities. As we can see from the figures, as the volatility increases, the mean started to decrease and the spread of the distribution remained similar. This is also clear from its formulation as 
 $$\frac{1}{\sigma}\log(S_t) = \log(S_0) + (\frac{r}{\sigma} - \frac{\sigma}{2} )t + W_t$$
-and increase in volatility negatively affect the linear drift term in above formula.
+and increase in volatility negatively affect the linear drift term in above formula.\\
 
-For some exotic options, direct pricing using risk neutral measure method could be difficult. Another way is to use Monte Carlo simulation. A simple implementation of this method is to price a European call option. 
+For some exotic options, direct pricing using risk neutral measure method could be difficult. Another way is to use Monte Carlo simulation. A simple implementation of this method is to price a European call option. \\
 
 \begin{figure}[t]
         \centering
@@ -110,9 +113,220 @@ For some exotic options, direct pricing using risk neutral measure method could 
 		\label{fig:1.stock_vs_vol}
 \end{figure}
 
-\section{Heston Model}
+Other than computing price of an european option from Black-Scholes' model, we could price it through Monte Carlo simulation. Computer could simulate a large amount of stock price paths. With enough simulation and Law of Large Numbers, we can conclude that the sample mean of our option price simulation converge to the true value of the option. For instance, the theoratical price for an european call option with $S_0 = 40$, $r = 0.03$, $K = 40$ and $T = 1$ is 
+The Monte Carlo simulation of the same parameter with 1000%N_sim
+simulations could get %CallPricingByMonteCarlo
+, a very closed answer.
+
+Using Monte Carlo simulation, we can observe the relationship between the price, the strike, the maturity. Figure \ref{fig:1.call_price_by_change_T} shows that increase in the maturity would increase the price of call options if other parameters were the same. This can be explained from two respective. First of all, given the strike and positive drift, longer maturity inflates the stock price linearly. On the other hand, if the stock price is below the strike, longer maturity offers more opportunities to swing above the strike price and giver positive return. Another interesting phenomena is that using the same number of simulation, the cureve we get become less smooth(as in larger change in the gradient).%more?
+
+On the other hand, Using the same parameters as before and take $\sigma = 0.2$ we can identiy the change in the call price with respect to the change in the strike(Figure \ref{fig:1.call_price_by_change_K}). It is immediate to see that the call price decreases as the strike increases. This result is clear as for all realised $S_T$, increase in K would decrease the call payoff ($(S_T-K)^+$). When the strike is far away from the spot price, the value of the call price at time 0 is very close to the calue of $(S_T-K)^+$(the green line).
+
+\begin{figure}[h]
+	\centering
+    \begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./fig/{1.call_price_by_change_T}.pdf}
+		\caption{Call Price VS T}
+		\label{fig:1.call_price_by_change_T}
+	\end{subfigure}
+	~
+    \begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./fig/{1.call_price_by_change_K}.pdf}
+		\caption{Call Price VS K}
+		\label{fig:1.call_price_by_change_K}
+	\end{subfigure}
+	\caption{Call price with different K and T}
+\end{figure}
+
+\section{Stochastic Volativity -- Heston Model}
+Now, we consider a stochastic volativity model formulated as 
+\begin{equation}
+	\begin{aligned}
+		dS_t &= S_t(rdt+\sqrt{V_t}dW_t) \\
+		dV_t &= \alpha(\beta - V_t)dt + \gamma\sqrt{V_t}dB_t
+	\end{aligned}
+	\label{eq:Heston Model}
+\end{equation}
+where W and B are two standard Brownian Motions with correlation coefficient $\rho \in (-1,1)$. 
+
+This is Heston Model named after mathematician Steven Heston. Compared with previous model, the volativity is not deterministic. It is a Cox–Ingersoll–Ross(CIR) process, a widely known mean-aversion process. 
+
+To simulate the stock price in this model, we need first to simulate its volativity process. In this case, the standard first order Euler scheme is used. We firstly generate two sequence of stationary and independent increments($\Delta B_1$ and $\Delta B_2$) with distribution $\mathcal{N}(0,\frac{1}{h})$ where $h$ is the length of each interval after discretisation. A correlated increments process $\Delta W$ can be generated by $\rho B_1 + \sqrt{1-\rho^2}B_2$. Then, cumulative sum of $\Delta B_1$ and $\Delta W$ would be exact scheme simulations of standard Brownian motions with correlation $\rho$. Using these two Brownian motions, we can generate the volativity process and the log stock price process by 
+\begin{equation}
+	\begin{aligned}
+		\hat{V}_{(j+1)h} &= \hat{V}_{jh} + \alpha(\beta - \hat{V}_{jh})h + \gamma \sqrt{V_t} \Delta B_{1_{j+1}}\\
+		\log({S_{t+1}}) &= \log({S_t}) + (r-\frac{V_t}{2})h + \sqrt{V_t} \Delta W_t \qquad \forall j = 0, 1, \dots
+	\end{aligned}
+	\label{eq:Heston_Euler}
+\end{equation}
+
+However, the volativity process could go below 0 as the support of the Normal distribution is $\mathcal{R}$ and $\Delta B$ could be arbitraly small negative. Therefore, a better model would bound the volativity process below to 0. This would be easily done by take the positive part of the volativity process in each simulation step. Figure \ref{fig:Heston_stock_price} shows one realisation of the Heston Mode.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.6\textwidth]{./fig/{2.stock_price_under_Heston}.pdf}
+	\caption{Stock Evolution under Heston Model}
+	\label{fig:Heston_stock_price}
+\end{figure}
+
+Using this model we can, again, compute european call option price using Monte Carlo method. Figure \ref{fig:call_vs_T} shows the change in the call price due to the difference in maturity while keep other variables constant and strike being 40. The trend of the call price is very similar the one in the Black-Scholes' model. The price increases when the maturity increases. The call prices obtained in these two models are also very similar. However, we expect smoothly increasing curves as all the random varibles in the formulation are continuous and monotonic. However, the curve we got, especially when $T$ approaches 1, became unstable. One way to mitigate the variation is to increase the number of the Monte Carlo simultions.
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./fig/{2.call_price_by_change_T}.pdf}
+		\caption{Call Price vs Maturity}
+		\label{fig:call_vs_T}
+	\end{subfigure}
+	~
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./fig/{2.call_price_by_change_K}.pdf}
+		\caption{Call Price vs Strike}
+		\label{fig:call_vs_K}
+	\end{subfigure}
+	\caption{Monte Carlo Call Option Pricing}
+\end{figure}
+
+similarly, we plot call price against the strike. Figure \ref{fig:call_vs_K} illustrates change in call price with respect to the strike. Clearly, the call price decreases as the strike price goes up. 
+
+In reality, the call price can be directly obtained from the market and the instantaneous volativity is not trival to get. Therefore, the analysts would calculate the implied volativity. Implied volativity is the volativity that if used in the Black-Scholes' model, call price computed from the model matches the market price. It is an indicator of the actual volativity of the stock. Using data from previous simulation, we plot the implied volativity against the strike (Figure \ref{fig:implied_vol}).
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.6\textwidth]{./fig/{2.implied_vol}.pdf}
+	\caption{Volativity Smile}
+	\label{fig:implied_vol}
+\end{figure}
+
 
 \section{Ruin Probability in Finite Time}
+Ruin theory is essential to the insurance industry. Ruin theory studies the probability of an instance company fail to comply its obligations to its policy holders. The essential point of the theory is to monitor company's reserves $U_t$. One simple model is that the company receieves a continuous stream of premium at rate of $c$ and the claims comes with coumpound poisson process. mathematically,
+\begin{equation}
+	U_t = u + ct + \sum_{i=1}^{N_t}Y_i
+	\label{eq:U_t}
+\end{equation}
+where $u$ is the initial reserve, $N_t$ has poisson distribution with intensity $\lambda$, and $Y_i$s are independent exponential random variable with mean $1/\alpha$ and independent of $N$. Moreover, $c\ge \lambda/\alpha$.
+
+To simulate this process, we need to split the process into three parts. The first part ($u+ct$) is a linear drift term and can be calculated directly. Secondly, we need to simulate exponential random variables. Given uniform number generator in computer system, we can obtain a uniform random variable ($X$) between 0 and 1. Then, $-\frac{1}{\lambda}(log(1-X)$ would follow $Exp(\lambda)$ distribution. % reference
+Thirdly, we need to be able to generate poisson processes. Poisson processes are jumping processes with exponential inter-arrival time. We can generate inter-arrival times from corresponding exponential distribution and filling the value in the process as the number of jumps happened yet.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics{./fig/{3.expRand}.pdf}
+	\caption{histogram of exponential random variable}
+	\label{fig:hist_exp}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./fig/{3.Uu}.pdf}
+		\caption{Varying $u$}
+	\end{subfigure}
+	~
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./fig/{3.Uc}.pdf}
+		\caption{Varying $c$}
+	\end{subfigure}
+	~
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./fig/{3.Ulambda}.pdf}
+		\caption{Varying $\lambda$}
+	\end{subfigure}
+	~
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./fig/{3.Ualpha}.pdf}
+		\caption{Varying $\alpha$}
+	\end{subfigure}
+	\caption{$U_t$}
+	\label{fig:U_vs_all}
+\end{figure}
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./fig/{3.NewUu}.pdf}
+		\caption{Varying $u$}
+	\end{subfigure}
+	~
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./fig/{3.NewUc}.pdf}
+		\caption{Varying $c$}
+	\end{subfigure}
+	~
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./fig/{3.NewUlambda}.pdf}
+		\caption{Varying $\lambda$}
+	\end{subfigure}
+	~
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./fig/{3.NewUalpha}.pdf}
+		\caption{Varying $\alpha$}
+	\end{subfigure}
+	\caption{$U_t with Brownian motion$}
+	\label{fig:U_with_BM_vs_all}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./fig/{3.u_is_0.5}.pdf}
+		\caption{$u=0.5$}
+	\end{subfigure}
+	~
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./fig/{3.u_is_2}.pdf}
+		\caption{$u=2$}
+	\end{subfigure}
+	~
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./fig/{3.u_is_4}.pdf}
+		\caption{$u=4$}
+	\end{subfigure}
+	~
+	\caption{$-U_{\tau_5}$}
+	\label{fig:-UTau5_hist}
+\end{figure}
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./fig/{3.u_is_0.5_with_sigma_be_0.3}.pdf}
+		\caption{$u=0.5$}
+	\end{subfigure}
+	~
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./fig/{3.u_is_2_with_sigma_be_0.3}.pdf}
+		\caption{$u=2$}
+	\end{subfigure}
+	~
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./fig/{3.u_is_4_with_sigma_be_0.3}.pdf}
+		\caption{$u=4$}
+	\end{subfigure}
+	~
+	\caption{$-U_{\tau_5}$ with $\sigma=0.3$}
+	\label{fig:-UTau5_hist_sigma_0.3}
+\end{figure}
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./fig/{3.u_is_0.5_with_sigma_be_1}.pdf}
+		\caption{$u=0.5$}
+	\end{subfigure}
+	~
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./fig/{3.u_is_2_with_sigma_be_1}.pdf}
+		\caption{$u=2$}
+	\end{subfigure}
+	~
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./fig/{3.u_is_4_with_sigma_be_1}.pdf}
+		\caption{$u=4$}
+	\end{subfigure}
+	~
+	\caption{$-U_{\tau_5}$ with $\sigma=1$}
+	\label{fig:-UTau5_hist_sigma_1}
+\end{figure}
+
+
 
 \section{Systematic Risk}
 
@@ -127,31 +341,31 @@ For some exotic options, direct pricing using risk neutral measure method could 
 
 \section{Appendix}
 Matlab codes used in the project:
-\includecode{Q1.m}
-\includecode{GeometricBrownianMotion.m}
-\includecode{CallValue.m}
-\includecode{CallPricingByMonteCarlo.m}
-\includecode{Q2.m}
-\includecode{getHestonSimulation.m}
-\includecode{HestonCallPricingByMonteCarlo.m}
-\includecode{getImpliedVolatility.m}
-\includecode{DownAndOutOptionValue.m}
-\includecode{DownAndOutOptionPricingByMonteCarlo.m}
-\includecode{DownAndOutOptionPricingBySolvingPDE.m}
-\includecode{Q3.m}
-\includecode{CompoundPoissonGenerator.m}
-\includecode{getU.m}
-\includecode{ruinProbSimulation.m}
-\includecode{getTau.m}
-\includecode{getNewU.m}
-\includecode{ComputeETTau.m}
-\includecode{isRuined.m}
-\includecode{notRuined.m}
-\includecode{SystemRiskModel.m}
-\includecode{getDefaultTime.m}
-\includecode{DefaultTimeDiffSummary.m}
-\includecode{getNumofDefault.m}
-\includecode{saveTightFigure.m}
-\includecode{LSummary.m}
+%\includecode{Q1.m}
+%\includecode{GeometricBrownianMotion.m}
+%\includecode{CallValue.m}
+%\includecode{CallPricingByMonteCarlo.m}
+%\includecode{Q2.m}
+%\includecode{getHestonSimulation.m}
+%\includecode{HestonCallPricingByMonteCarlo.m}
+%\includecode{getImpliedVolatility.m}
+%\includecode{DownAndOutOptionValue.m}
+%\includecode{DownAndOutOptionPricingByMonteCarlo.m}
+%\includecode{DownAndOutOptionPricingBySolvingPDE.m}
+%\includecode{Q3.m}
+%\includecode{CompoundPoissonGenerator.m}
+%\includecode{getU.m}
+%\includecode{ruinProbSimulation.m}
+%\includecode{getTau.m}
+%\includecode{getNewU.m}
+%\includecode{ComputeETTau.m}
+%\includecode{isRuined.m}
+%\includecode{notRuined.m}
+%\includecode{SystemRiskModel.m}
+%\includecode{getDefaultTime.m}
+%\includecode{DefaultTimeDiffSummary.m}
+%\includecode{getNumofDefault.m}
+%\includecode{saveTightFigure.m}
+%\includecode{LSummary.m}
 \end{document}
 

@@ -1,7 +1,5 @@
-function U = getNewU(u, alpha, c, lambda, sigma, T, N)
-    time = 0:1/N:T - 1/N;
-	norm = normrnd(0, 1, N*T, 1);
+function U = getNewU(u, alpha, c, lambda, sigma, T, N_int)
+	norm = normrnd(0, 1/sqrt(N_int), N_int*T+1, 1);
 	W = cumsum(norm);
-    U = u + c * time' + sigma * W - CompoundPoissonGenerator(lambda, alpha, T, N);
-
+    U = sigma * W + getU(u, alpha, c, lambda, T, N_int);
 end

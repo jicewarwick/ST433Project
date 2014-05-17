@@ -10,8 +10,8 @@ function stock_process = getHestonSimulation(V0, alpha, beta, gamma, S0, r, rho,
 	end
 
 	stock_process = S0 * ones(T*N_int+1, 1);
-	W = rho * dB1 + sqrt(1 - rho^2) * dB2;
-	W = cumsum(W);
+	dW = rho * dB1 + sqrt(1 - rho^2) * dB2;
+	W = cumsum(dW);
 	t = (0:1/N_int:T)' .* ( - Vt / 2 + r);
 	stock_process = stock_process .* exp(t + sqrt(Vt) .* W);
 end

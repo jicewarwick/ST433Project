@@ -1,15 +1,10 @@
-function coumpoundPoisson = CompoundPoissonGenerator(lambda, alpha, T, N)
-	coumpoundPoisson = zeros(T*N, 1);
-	t = 0;
-	Y = 0;
-	index = 1;
+function coumpoundPoisson = CompoundPoissonGenerator(lambda, alpha, T, N_int)
+	delta_coumpound_poisson = zeros(T*N_int+1, 1);
+	t = exprnd(lambda);
 	while (t < T)
-		tnext = t + exprnd(lambda);
-		for	time = index/N:1/N:min(tnext, T)
-			coumpoundPoisson(index) = Y;
-			index = index + 1;
-		end
-		t = tnext;
-		Y = Y + exprnd(alpha);
+		delta_coumpound_poisson(ceil(t*N_int)) = exprnd(alpha);
+		t = t + exprnd(lambda);
 	end
+
+	coumpoundPoisson = cumsum(delta_coumpound_poisson);
 end

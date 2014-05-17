@@ -1,27 +1,27 @@
 % Common Constants:
 S0 = 40;
 r = 0.03;
-sigma = 0.4;
+sigma = 0.3;
 V0 = sigma^2;
 K = 40;
 T = 1;
 N_int = 1000;
-N_sim = 2000;
+N_sim = 10000;
 
 % Question Switch
 Part1 = 0;
 Part3 = 0;
-Part4 = 0;
-Part5 = 0;
+Part4 = 1;
+Part5 = 1;
 Part6 = 0;
 Part7 = 0;
 
 % Part 1:
 %-----------------------
-alpha = 0.9;
+alpha = 2;
 beta = 0.04;
-gamma = 0;
-rho = 0.5;
+gamma = 0.1;
+rho = -0.5;
 
 if (Part1 == 1)
 	time = 0:1/N_int:T;
@@ -33,14 +33,25 @@ if (Part1 == 1)
 	title('stock price evolution under Heston model');
 	xlabel('time');
 	ylabel('stock price');
-	print(fig, '-dpdf', '2.stock_price_under_Heston.pdf');
+	saveTightFigure('2.stock_price_under_Heston.pdf');
 	pause();
 	close;
 end
 
-
 % Part 3:
 %-----------------------
+rho = 0.6;
+K = 40;
+N_sim = 1000;
+sigma = 0.5;
+r = 0.03;
+S0 = 40;
+T = 1;
+N_int = 250;
+alpha = 0.3;
+beta = 0.5;
+gamma = 0.8;
+
 if (Part3 == 1)
 	for	i = 1:100;
 		T = i / 100;
@@ -51,7 +62,7 @@ if (Part3 == 1)
 	plot(call_price_by_change_T);
 	xlabel('Maturity');
 	ylabel('Call Option Price');
-	print(fig, '-dpdf', '2.call_price_by_change_T.pdf');
+	saveTightFigure('2.call_price_by_change_T.pdf');
 	pause();
 	close;
 end
@@ -59,32 +70,38 @@ end
 % Part 4:
 %-----------------------
 if (Part4 == 1)
-	T = 1;
-	K = (30:0.1:50)';
+	K = (30:50)';
 	for	i = 1:size(K);
 		call_price_by_change_K(i) = HestonCallPricingByMonteCarlo(V0, alpha, beta, gamma, S0, r, rho, K(i), T, N_int, N_sim);
 	end
 
 	% plot
 	fig = figure;
-	plot(call_price_by_change_K, K);
+	plot(K',call_price_by_change_K);
 	xlabel('Strike Price');
 	ylabel('Call Option Price');
-	print(fig, '-dpdf', '2.call_price_by_change_K.pdf');
+	saveTightFigure('2.call_price_by_change_K.pdf');
 	pause();
 end
 
 % Part 5:
 %-----------------------
-K = (30:0.1:50)';
+K = (30:50)';
+t = 0;
 if (Part5 == 1)
-	implied_vol = getImpliedVolatility(r, spot, K, t, T, call_price_by_change_K);
+	%implied_vol = getImpliedVolatility(r, S0, K, t, T, call_price_by_change_K);
+	for i = 1:size(K)
+		implied_vol(i) = blkimpv(S0, K(i), r, T, call_price_by_change_K(i));
+	end
 	% plot
-	K = (30:0.1:50)';
-	plot(K, abs(implied_vol));
+%	for i = 1:size(K);
+%		BS_call_price(i) = CallPricingByBSFormula(r, sqrt(implied_vol(i)), S0, K(i), t, T);
+%	end
+	
+	plot(K', implied_vol);
 	xlabel('K');
 	ylabel('Implied Volatility');
-	print(fig, '-dpdf', '2.implied_vol.pdf');
+	saveTightFigure('2.implied_vol.pdf');
 	pause();
 	close;
 end
@@ -122,8 +139,7 @@ if (Part7 == 1)
 	xlabel('time');
 	ylabel('spot price');
 	zlabel('barrier option price');
-	print(fig, '-dpdf', '2.sim_down_and_out_option_price.pdf');
+	saveTightFigure('2.sim_down_and_out_option_price.pdf');
 	pause();
 	close;
 end
-

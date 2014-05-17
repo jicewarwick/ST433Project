@@ -3,6 +3,7 @@
 % This functioin produces figures with little margin.
 % It is used in the main execution function to produce usable figure for the report.
 % Full credit goes to its original author.
+% License: BSD
 function saveTightFigure(h,outfilename)
 % SAVETIGHTFIGURE(OUTFILENAME) Saves the current figure without the white
 %   space/margin around it to the file OUTFILENAME. Output file type is

@@ -1,13 +1,13 @@
 % Common Costants:
-sigma = 1;
+sigma = 5;
 T = 10;
 N_int = 10;
 N_sim = 10;
 
 % Part Switch
-Part1 = 0;
-Part2 = 0;
-Part3 = 1;
+Part1 = 1;
+Part2 = 1;
+Part3 = 0;
 Part5 = 0;
 
 % Question 1
@@ -23,7 +23,7 @@ if (Part1 == 1)
 	plot(Xa0);
 	xlabel('time');
 	ylabel('log reserve');
-	print(fig, '-dpdf', '4.Xa0.pdf');
+	saveTightFigure('4.Xa0.pdf');
 	pause();
 	close;
 end
@@ -39,7 +39,7 @@ if (Part2 == 1)
 	plot(Xa10);
 	xlabel('time');
 	ylabel('log reserve');
-	print(fig, '-dpdf', '4.Xa10.pdf');
+	saveTightFigure('4.Xa10.pdf');
 	pause();
 	close;
 end
@@ -64,7 +64,7 @@ if (Part3 == 1)
 	plot(ETTau_a, a_bound);
 	xlabel('a');
 	ylabel('Expected Default Time');
-	print(fig, '-dpdf', '4.expected_default_time_vs_a.pdf');
+	saveTightFigure('4.expected_default_time_vs_a.pdf');
 	pause();
 	close;
 	DefaultTimeDiffSummary(default_time_a);
@@ -82,7 +82,7 @@ if (Part3 == 1)
 	plot(ETTau_sigma, sigma_bound);
 	xlabel('sigma');
 	ylabel('Expected Default Time');
-	print(fig, '-dpdf', '4.expected_default_time_vs_sigma.pdf');
+	saveTightFigure('4.expected_default_time_vs_sigma.pdf');
 	pause();
 	close;
 	DefaultTimeDiffSummary(default_time_sigma);
@@ -99,7 +99,7 @@ if (Part3 == 1)
 	plot(ETTau_N, N_bound);
 	xlabel('N');
 	ylabel('Expected Default Time');
-	print(fig, '-dpdf', '4.expected_default_time_vs_N.pdf');
+	saveTightFigure('4.expected_default_time_vs_N.pdf');
 	pause();
 	close;
 	DefaultTimeDiffSummary(default_time_N);
@@ -112,7 +112,7 @@ if (Part3 == 1)
 		plot(ETau_plot(i));
 		xlabel(x_label(i));
 		ylabel('Expected Default Time');
-		print(fig, '-dpdf', ['4.expected_default_time_vs_', x_label(i), '.pdf']);
+		saveTightFigure(['4.expected_default_time_vs_', x_label(i), '.pdf']);
 		pause();
 		close;
 	end

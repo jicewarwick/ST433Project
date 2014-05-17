@@ -7,8 +7,8 @@ T = 1;
 
 % Part Switch:
 Part2 = 1;
-Part3 = 0;
-Part4 = 0;
+Part3 = 1;
+Part4 = 1;
 
 % Part 2:
 %-----------------------
@@ -39,29 +39,34 @@ sigma = 0.9;
 if (Part3 == 1)
 	%for sigma = [0.1, 0.3, 0.8]
 	sim_call_price = CallPricingByMonteCarlo(S0, r, sigma, K, T, N_sim);
+	call_price = CallPricingByBSFormula(r, sigma, S0, K, 0, T);
 end
+
 
 % Part 4:
 %-----------------------
 T = 1;
-sigma = 0.2;
+sigma = 0.3;
 if (Part4 == 1)
 	% Fixing T and varying K:
-	for	i = 1:80
+	for	i = 1:160
 		K = i / 2;
 		call_price_by_change_K(i) = CallPricingByMonteCarlo(S0, r, sigma, K, T, N_sim);
 	end
-	x = 0.5:0.5:40;
+	x = 0.5:0.5:80;
+	call_val = 39.5:-.5:-40;
+	call_val(80:160)=0;
 
 	% plot
-	plot(x, call_price_by_change_K);
+	plot(x, call_price_by_change_K, x, call_val);
 	xlabel('K');
 	ylabel('Call Price');
-	print(fig, '-dpdf', '1.call_price_by_change_K.pdf');
+	saveTightFigure('1.call_price_by_change_K.pdf');
 
 	pause();
 
 	K = 40;
+	N_sim = 2000;
 	% Fixing K and varying T:
 	for	i = 1:100
 		T = i / 100;
@@ -69,7 +74,9 @@ if (Part4 == 1)
 	end
 	x = 0.01:0.01:1;
 	plot(x, call_price_by_change_T);
-	print(fig, '-dpdf', '1.call_price_by_change_T.pdf');
+	xlabel('T');
+	ylabel('Call Price');
+	saveTightFigure('1.call_price_by_change_T.pdf');
 	pause();
 
 end
