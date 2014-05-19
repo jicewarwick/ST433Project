@@ -1,15 +1,15 @@
 % Common constants:
-N_int= 1000;
+N_int= 3000;
 N_trial = 20;
-N_sim = 1000;
-T = 5;
+N_sim = 500;
+T = 10;
 time = 0:1/N_int:T;
-fig = figure;
+%fig = figure;
 
 % Question Stwich
 Part1 = 0;
 Part2 = 0;
-Part3 = 1;
+Part3 = 0;
 Part4 = 0;
 Part5 = 0;
 Part6 = 0;
@@ -26,16 +26,16 @@ end
 %----------------------------
 % base variable
 u = 1;
-alpha = 1;
-c = 1;
-lambda = 1;
+alpha = 3;
+c = 1.5;
+lambda = 2;
 
 % keeping all other variables constant
 %--------
 
 if (Part2 == 1)
 	% Varying u:
-	u_2 = 5*(1:4)';
+	u_2 = (2:5)';
 	for i = 1:size(u_2)
 		Uu(:,i) = getU(u_2(i), alpha, c, lambda, T, N_int);
 	end
@@ -90,6 +90,14 @@ end
 
 % Question 3
 %----------------------------
+u = 2;
+alpha = 3;
+lambda = 2;
+T = 5;
+c = 1;
+
+		ruinProb = ruinProbSimulation(u, alpha, c, lambda, T, N_int, N_sim);
+
 if (Part3 == 1)
 	% varying u
 	for i = 1:N_trial

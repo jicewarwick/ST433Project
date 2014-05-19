@@ -23,27 +23,32 @@
 	u(1,1:knocked_out_index) = 0;
 
 	% construct the transformation matrix according to P89
-	A = (1+lambda) * eye(x_dim, x_dim);
+	A = (1+lambda) * eye(x_dim-2, x_dim-2);
 	A(1,2) = -lambda/2;
-	A(x_dim, x_dim-1) = -lambda/2;
-	for i = 2:x_dim-1
+	A(x_dim-2, x_dim-3) = -lambda/2;
+	for i = 2:x_dim-3
 		A(i,i-1) = -lambda/2;
 		A(i,i+1) = -lambda/2;
 	end
 	Ainv = inv(A);
 
-	B = (1-lambda) * eye(x_dim, x_dim); 
+	B = (1-lambda) * eye(x_dim-2, x_dim-2); 
 	B(1,2) = lambda/2;
-	B(x_dim, x_dim-1) = lambda/2;
-	for i = 2:x_dim-1
+	B(x_dim-2, x_dim-3) = lambda/2;
+	for i = 2:x_dim-3
 		B(i,i-1) = lambda/2;
 		B(i,i+1) = lambda/2;
 	end
 
+	for i = 1:tau_dim
+		ub(i,x_dim-1) = exp(x_max * coeff + tau(i) * coeff^2);
+	end
+	right_boundary = 
+
 	for i = 1:tau_dim-1
-		u(i+1,:) = (Ainv*B)*(u(i,:)');
+		u(i+1,2:x_dim-1) = (Ainv*B)*(u(i,2:x_dim-1)');
 		u(i+1,1:knocked_out_index) = 0;
-		%u(i+1,x_dim) = exp(0.5*x_max * (1+ 2*r/(sigma^2)) + tau(i) * 0.25 * (1+2*r/(sigma^2)^2 ));
+		u(i+1,x_dim-1) = u(i+1,x_dim-1) + 
 		u(i+1,x_dim) = exp(x_max * coeff + tau(i+1) * coeff^2);
 	end
 
