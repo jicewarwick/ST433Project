@@ -2,6 +2,7 @@
 N_int= 3000;
 N_trial = 20;
 N_sim = 500;
+N_hist = 50;
 T = 10;
 time = 0:1/N_int:T;
 %fig = figure;
@@ -10,7 +11,7 @@ time = 0:1/N_int:T;
 Part1 = 0;
 Part2 = 0;
 Part3 = 0;
-Part4 = 0;
+Part4 = 1;
 Part5 = 0;
 Part6 = 0;
 Part7 = 0;
@@ -19,7 +20,7 @@ Part7 = 0;
 %----------------------------
 if (Part1 == 1)
 	expRand = -log(1-rand(N_sim));
-	hist(expRand,100);
+	hist(expRand,N_hist);
 	saveTightFigure('3.expRand.pdf')
 end
 % Question 2
@@ -96,8 +97,6 @@ lambda = 2;
 T = 5;
 c = 1;
 
-		ruinProb = ruinProbSimulation(u, alpha, c, lambda, T, N_int, N_sim);
-
 if (Part3 == 1)
 	% varying u
 	for i = 1:N_trial
@@ -132,7 +131,7 @@ if (Part4 == 1)
 			UTau5(j) = U5(ceil(N_int*getTau(U5, T, N_int)));
 		end
 			
-		hist(-UTau5, 100);
+		hist(-UTau5, N_hist);
 		name = ['3.u_is_', num2str(u(i)), '.pdf'];
 		saveTightFigure(name);
 		pause();
@@ -227,7 +226,7 @@ if (Part7 == 1)
 			end
 				
 			fig = figure;
-			hist(-UTau5, 100);
+			hist(-UTau5, N_hist);
 			%title(['u = ', num2str(u), 'with sigma = ', num2str(sigma)]);
 			name = ['3.u_is_', num2str(u), '_with_sigma_be_', num2str(sigma), '.pdf'];
 			saveTightFigure(name);

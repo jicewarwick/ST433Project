@@ -4,6 +4,7 @@ S0 = 40;
 r = 0.03;
 sigma = 1;
 T = 1;
+N_hist = 50;
 
 % Part Switch:
 Part2 = 1;
@@ -22,7 +23,7 @@ if (Part2 == 1)
 
 		% hist plot
 		fig = figure;
-		hist(plot_data, 50);
+		hist(plot_data, N_hist);
 		xlabel('log(S_T)/\sigma');
 		name = [ '1.logST_hist_sigma', num2str(i/10), '.pdf'];
 		saveTightFigure(name);
