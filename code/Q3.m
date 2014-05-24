@@ -11,8 +11,8 @@ time = 0:1/N_int:T;
 Part1 = 0;
 Part2 = 0;
 Part3 = 0;
-Part4 = 1;
-Part5 = 0;
+Part4 = 0;
+Part5 = 1;
 Part6 = 0;
 Part7 = 0;
 
@@ -94,24 +94,46 @@ end
 u = 2;
 alpha = 3;
 lambda = 2;
-T = 5;
+T = 10;
 c = 1;
+u_bound = (2:6)';
+c_bound = (1:0.5:4)';
+lambda_bound = (0.5:0.4:3)';
+T_bound = [1,5,10]';
+sigma_bound = (0.5:0.5:3)';
+sigma = 1;
 
 if (Part3 == 1)
-	% varying u
-	for i = 1:N_trial
-		ruinProbU(i) = ruinProbSimulation(i, alpha, c, lambda, T, N_int, N_sim);
-	end
+	for j = 1:size(T_bound)
+		% varying u
+		for i = 1:size(u_bound)
+			ruinProbU(i,j) = ruinProbSimulation(u_bound(i), alpha, c, lambda, T_bound(j), N_int, N_sim);
+			ruinProbNewU(i,j) = ruinProbSimulationWithSigma(u_bound(i), alpha, c, lambda, sigma, T_bound(j), N_int, N_sim);
+		end
 
-	% varying c
-	for i = 1:N_trial
-		ruinProbC(i) = ruinProbSimulation(u, alpha, i, lambda, T, N_int, N_sim);
-	end
+		% varying c
+		for i = 1:size(c_bound)
+			ruinProbC(i,j) = ruinProbSimulation(u, alpha, c_bound(i), lambda, T_bound(j), N_int, N_sim);
+		end
 
-	% varying lambda
-	for i = 1:N_trial
-		ruinProbLambda(i) = ruinProbSimulation(u, alpha, c, i, T, N_int, N_sim);
+		% varying lambda
+		for i = 1:size(lambda_bound)
+			ruinProbLambda(i,j) = ruinProbSimulation(u, alpha, c, lambda_bound(i), T_bound(j), N_int, N_sim);
+			ruinProbNewLambda(i,j) = ruinProbSimulationWithSigma(u, alpha, c, lambda_bound(i), sigma, T_bound(j), N_int, N_sim);
+		end
+
+		% varying sigma
+		for i = 1:size(sigma_bound)
+			ruinProbNewSigma(i,j) = ruinProbSimulationWithSigma(u, alpha, c, lambda, sigma_bound(i), T_bound(j), N_int, N_sim);
+		end
 	end
+	RuinProbOutput(ruinProbU, 'u', u_bound, T_bound, 'ruin_vs_u');
+	RuinProbOutput(ruinProbC, 'c', c_bound, T_bound, 'ruin_vs_c');
+	RuinProbOutput(ruinProbLambda, '\lambda', lambda_bound, T_bound, 'ruin_vs_lambda');
+
+	RuinProbOutput(ruinProbNewU, 'u', u_bound, T_bound, 'ruin_vs_u_with_simga');
+	RuinProbOutput(ruinProbNewSigma, '\sigma', sigma_bound, T_bound, 'ruin_vs_sigma_with_simga');
+	RuinProbOutput(ruinProbNewLambda, '\lambda', lambda_bound, T_bound, 'ruin_vs_lambda_with_simga');
 end
 
 % Question 4
@@ -144,34 +166,42 @@ N_int = 1000;
 %----------------------------
 % keeping all other variables constant
 %--------
+alpha = 4;
+lambda = 2;
+c = 0.5;
+T = 10;
+time = 0:1/N_int:T;
 sigma = 3;
+T = 10;
+
+u_5 = 2*(1:4)';
+alpha_5 = 2*(1:4)';
+c_5 = 2*(1:4)';
+lambda_5 = 2*(1:4)';
+sigma_5 = 0.5*(1:4)';
+
 if (Part5 == 1)
 	% Varying u:
-	u_5 = 2*(1:4)';
 	for i = 1:size(u_5)
 		NewUu(:,i) = getNewU(u_5(i), alpha, c, lambda, sigma, T, N_int);
 	end
 
 	% Varying alpha:
-	alpha_5 = 2*(1:4)';
 	for i = 1:size(alpha_5)
 		NewUalpha(:,i) = getNewU(u, alpha_5(i), c, lambda, sigma, T, N_int);
 	end
 
 	% Varying c:
-	c_5 = 2*(1:4)';
 	for i = 1:size(c_5)
 		NewUc(:,i) = getNewU(u, alpha, c_5(i), lambda, sigma, T, N_int);
 	end
 
 	% Varying lambda:
-	lambda_5 = 2*(1:4)';
 	for i = 1:size(lambda_5)
 		NewUlambda(:,i) = getNewU(u, alpha, c, lambda_5(i), sigma, T, N_int);
 	end
 
 	% Varying sigma:
-	sigma_5 = 0.2*(1:4)';
 	for i = 1:size(sigma_5)
 		NewUsigma(:,i) = getNewU(u, alpha, c, lambda, sigma_5(i), T, N_int);
 	end
@@ -204,11 +234,14 @@ if (Part5 == 1)
 		legend(num2str(alpha_5));
 		saveTightFigure('3.NewUalpha.pdf');
 		pause();
+
+	plot(time, NewUsigma);
+		xlabel('t')
+		ylabel('U');
+		legend(num2str(sigma_5));
+		saveTightFigure('3.NewUsigma.pdf');
+		pause();
 end
-
-
-% Question 6
-%----------------------------
 
 % Question 7
 %----------------------------

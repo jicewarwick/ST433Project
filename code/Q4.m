@@ -1,8 +1,8 @@
 % Common Costants:
 sigma = 5;
 T = 10;
-N_int = 100;
-N_sim = 100;
+N_int = 200;
+N_sim = 200;
 
 % Part Switch
 Part1 = 0;
@@ -53,10 +53,11 @@ end
 D = -0.5;
 N = 10;
 a = 10;
-sigma = 1;
-a_bound = (1:10)';
-sigma_bound = (0.1:0.1:1)';
-N_bound = (5:5:35)';
+T = 10;
+sigma = 0.5;
+a_bound = (0:5:40)';
+sigma_bound = (0.1:0.5:2.1)';
+N_bound = (5:5:20)';
 
 if (Part3_a == 1)
 	% default_time_a stores the default time at the first N entry,
@@ -72,8 +73,8 @@ if (Part3_a == 1)
 		end
 		ETTau_a(i) = mean(default_time_a(i,:,N+1));
 		VarTTau_a(i) = mean(default_time_a(i,:,N+2));
-		mean_num_default_bank(i) = mean(default_time_a(i,:,N+3));
-		var_num_default_bank(i) = var(default_time_a(i,:,N+3));
+		mean_num_default_bank_a(i) = mean(default_time_a(i,:,N+3));
+		var_num_default_bank_a(i) = var(default_time_a(i,:,N+3));
 	end
 	% plot
 	plot(a_bound, ETTau_a, a_bound, VarTTau_a);
@@ -81,6 +82,14 @@ if (Part3_a == 1)
 	legend('E[Ttau_i]', 'Var[Ttau_i]');
 	ylabel('Expected Default Time');
 	saveTightFigure('4.expected_default_time_vs_a.pdf');
+	%pause();
+	close;
+
+	plot(a_bound, mean_num_default_bank_a, a_bound, var_num_default_bank_a);
+	xlabel('a');
+	legend('Average Number of Failed Banks', 'Variance of Failed Banks');
+	ylabel('Number Default Time');
+	saveTightFigure('4.num_default_banks_a.pdf');
 	%pause();
 	close;
 end
@@ -107,6 +116,14 @@ if (Part3_sigma == 1)
 	saveTightFigure('4.expected_default_time_vs_sigma.pdf');
 	%pause();
 	close;
+
+	plot(sigma_bound, mean_num_default_bank_sigma, sigma_bound, var_num_default_bank_sigma);
+	xlabel('\sigma');
+	legend('Average Number of Failed Banks', 'Variance of Failed Banks');
+	ylabel('Number Default Time');
+	saveTightFigure('4.num_default_banks_sigma.pdf');
+	%pause();
+	close;
 end
 
 if (Part3_N == 1)
@@ -130,6 +147,14 @@ if (Part3_N == 1)
 	legend('E[Ttau_i]', 'Var[Ttau_i]');
 	ylabel('Expected Default Time');
 	saveTightFigure('4.expected_default_time_vs_N.pdf');
+	%pause();
+	close;
+
+	plot(N_bound, mean_num_default_bank_N, N_bound, var_num_default_bank_N);
+	xlabel('N');
+	legend('Average Number of Failed Banks', 'Variance of Failed Banks');
+	ylabel('Number Default Time');
+	saveTightFigure('4.num_default_banks_N.pdf');
 	%pause();
 	close;
 end

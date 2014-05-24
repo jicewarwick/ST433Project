@@ -299,12 +299,29 @@ The main purpose of the model is to model the reseves and be caucious of the rui
 	\caption{$-U_{\tau_5}$}
 	\label{fig:-UTau5_hist}
 \end{figure}
-The model above have a deterministic stream of continuous premium. However, this is an unrealistic assumption. The company would have some investments into outside projects and others may be interested in investing in the insurance company as well.  If we assume independent and stationary change of net investment and the change in normally distributed, we can form a new model as follow
+
+Moreover, we can determine the realtive affects of the parameters in the model. 
+
+\begin{table}
+	\centering
+	\input{./fig/ruin_vs_u.tex}
+	\quad
+	\input{./fig/ruin_vs_c.tex}
+	\quad
+	\input{./fig/ruin_vs_lambda.tex}
+	\caption{Ruin Probanility with differnt parameter}
+	\label{tab:ruin_vs_all}
+\end{table}
+
+The model above have no factors other than claims that affect the company's reserve. However, this is an unrealistic assumption. The company would have some investments into outside projects and others may be interested in investing in the insurance company as well.  If we assume independent and stationary change of net investment and the change in normally distributed, we can form a new model as follow
 \begin{equation}
 	U_t = u + ct + \sigma W_t + \sum_{i=1}^{N_t}Y_i
 	\label{eq:U_t_BM}
 \end{equation}
-where $W$ is the standard Brownian motion.
+where $W$ is the standard Brownian motion.\\
+
+The New Model has a new source of uncertainty. We are interested in what the new Brownian motion in the reserve process would affect the performance of a company. Figure \ref{fig:U_with_BM_vs_all} shows four possible path of $U_t$ with different value of parameters. Since the Brownian motion has 0 expectation at any given $t$, the mean of the process is the same as the previous model. On the other hand, the Brownian motion significantly changed the default probability of the process. In the previous model, the only downward force is the coumpound poisson process and it takes an exponentially distributed time to get another claim. When Brownian motion is present, there is constantly downward movements. Although the mean is unchanged, the possiblity of get below 0 increases significantly. Figure \ref{tab:ruin_vs_all_with_BM} shows the ruin probability by varying $u$, $\sigma$ and $\lambda$. Similar patten between the default time and $u$ and $\lambda$ can be spotted. Increase in sigma leads to a higher probability of default. The effect of the Brownian motion can also be spotted in the histogram of $-T_{\tau_5}$. Figure \ref{fig:-UTau5_hist_sigma_0.3} and \ref{fig:-UTau5_hist_sigma_1} give a very large peak around 0.
+
 
 \begin{figure}[h]
 	\centering
@@ -327,6 +344,12 @@ where $W$ is the standard Brownian motion.
 		\includegraphics[width=\textwidth]{./fig/{3.NewUalpha}.pdf}
 		\caption{Varying $\alpha$}
 	\end{subfigure}
+	~
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{./fig/{3.NewUsigma}.pdf}
+		\caption{Varying $\sigma$}
+	\end{subfigure}
+	
 	\caption{$U_t$ with Brownian motion}
 	\label{fig:U_with_BM_vs_all}
 \end{figure}
@@ -373,8 +396,17 @@ where $W$ is the standard Brownian motion.
 	\label{fig:-UTau5_hist_sigma_1}
 \end{figure}
 
-Compared with the the initial figure where $\sigma=0$, the ruin probability increased along with increase of $\sigma$ for each of $u$. The affect is exceptionally significant when $u$ is small as Brownian motion has infinite variation. 
-
+\begin{table}[htb]
+	\centering
+	\input{./fig/ruin_vs_u_with_simga.tex}
+	\quad
+	\input{./fig/ruin_vs_sigma_with_simga.tex}
+	\quad
+	\input{./fig/ruin_vs_lambda_with_simga.tex}
+	\caption{Ruin Probanility with differnt parameter and Brownian motion}
+	\label{tab:ruin_vs_all_with_BM}
+\end{table}
+Compared with the the initial figure where $\sigma=0$, the ruin probability increased along with increase of $\sigma$ for each of $u$. The affect is exceptionally significant when $u$ is small as Brownian motion has infinite variation. When $u$ is small, the movement of the Brownian motion could easily force the process to become negative. While the Brownian motion is continuous, we see a peak around the origin. 
 
 \section{Systematic Risk}
 In this section, we study the reserves in the Banking sector. We assume that the changes in each bank's reserve is independent and stochastic. However, all banks are connected by their lending activity to each other. Parameter $a$ describes the willingness of lending in the system. We can also interpretate it as how inter-connnected the banking system is. The model is formulted as 
@@ -384,7 +416,7 @@ In this section, we study the reserves in the Banking sector. We assume that the
 \end{equation}
 where $X_t^i$ is the log reserve of bank $i$. $\bar{X}_t = \frac{1}{N}\sum^N_{i=1}X^i_t$ is the average log reserve at time t. Banks with high reserves tends to lend to the ones with not enough reserve. Each $W^i$ are considered to be independent Brownian motion and they all share same constant volativity $\sigma$. We set the initial reserve $X_0^i = 0 \ \forall i$.\\
 
-Using the first Euler Scheme, we can easily simulate banks' reserves in Matlab. Figure \ref{fig:SystemRiskModel} show the evolution of banks' reserves with different $a$ for 10 banks in the system. When $a$ is 0, this is essentially a system of independent Brownian motions. We see that their final reserve are independent as well. In this system, bank failures are purely due to their associated Brownian motions. However, when $a$ is 10, reserves of banks cluster together and they have roughly the same path. This results that their final reserve are quite similar. In this case, one bank's reserve not only depends on its Brownian motion, but more importantly, other banks' reserve. In some simulations, we can find that all banks have fairly large reserves. However, it is possible that all banks have little reserve and result in large numbers of bank runs. We will now offer some numerical insights into the problem.
+Using the first Euler Scheme, we can easily simulate banks' reserves in Matlab. Figure \ref{fig:SystemRiskModel} show the evolution of banks' reserves with different $a$ for 10 banks in the system. When $a$ is 0, this is essentially a system of independent Brownian motions. We see that their final reserve are independent as well. In this system, bank failures are purely due to their associated Brownian motions. However, when $a$ is 10, reserves of banks cluster together and they have roughly the same path. This results that their final reserve are quite similar. In this case, one bank's reserve not only depends on its Brownian motion, but more importantly, other banks' reserve. In some simulations, we can find that all banks have fairly large reserves. However, it is possible that all banks have little reserve and result in large numbers of bank-runs. We will now offer some numerical insights into the problem.\\
 
 \begin{figure}[h]
 	\centering
@@ -401,7 +433,13 @@ Using the first Euler Scheme, we can easily simulate banks' reserves in Matlab. 
 	\label{fig:SystemRiskModel}
 \end{figure}
 
+Fistly, we set the par for insolvency. When log reserve is below $D = -0.5$, namely, if bank reserve is less than 60\% of its initial value, we declear that the bank is insolvent. We denote $\tau_i = \inf\{t:X_t^i<D\}\wedge T$ be the default time for that bank if $\tau_i$ is less than $T$. 
 
+Figure ?? shows the relationship between the default time, $a$, $\sigma$ and $N$. As it turns out,
+
+the spread of the default times decreases significantly when $a$ increases. 
+
+Moreover, we can monitor the number of default banks. In this model, 
 
 
 
