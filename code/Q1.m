@@ -1,5 +1,5 @@
 % Common Constants:
-N_sim = 1000;
+N_sim = 10000;
 S0 = 40;
 r = 0.03;
 sigma = 1;
@@ -7,9 +7,9 @@ T = 1;
 N_hist = 50;
 
 % Part Switch:
-Part2 = 1;
+Part2 = 0;
 Part3 = 1;
-Part4 = 1;
+Part4 = 0;
 
 % Part 2:
 %-----------------------
@@ -35,12 +35,10 @@ end
 % Part 3:
 %-----------------------
 K = 40; 
-sigma = 0.9;
 % Monte Carlo Method to valuate call option:
 if (Part3 == 1)
-	%for sigma = [0.1, 0.3, 0.8]
+	call_price = CallPricingByBSFormula(S0, r, sigma, K, 0, T);
 	sim_call_price = CallPricingByMonteCarlo(S0, r, sigma, K, T, N_sim);
-	call_price = CallPricingByBSFormula(r, sigma, S0, K, 0, T);
 end
 
 

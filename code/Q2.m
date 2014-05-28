@@ -6,15 +6,18 @@ V0 = sigma^2;
 K = 40;
 T = 1;
 N_int = 1000;
-N_sim = 10000;
+N_sim = 1000;
+N_tau_int = 1000;
+N_x_int = 80;
+x_max = 1;
 
 % Question Switch
 Part1 = 0;
 Part3 = 0;
 Part4 = 1;
 Part5 = 1;
-Part6 = 0;
-Part7 = 0;
+Part6 = 1;
+Part7 = 1;
 
 % Part 1:
 %-----------------------
@@ -40,15 +43,13 @@ end
 
 % Part 3:
 %-----------------------
-rho = 0.6;
+rho = -0.3;
 K = 40;
-N_sim = 1000;
-sigma = 0.5;
 r = 0.03;
 S0 = 40;
 T = 1;
 N_int = 250;
-alpha = 0.3;
+alpha = 0.5;
 beta = 0.5;
 gamma = 0.8;
 
@@ -116,37 +117,31 @@ end
 % Part 6:
 %-----------------------
 K = 40;
-T = 1;
-%implied_vol = implied_vol(11);
-%implied_vol = 0.2;
+sigma = sqrt(implied_vol(11));
+barrier_bound = [25, 30, 35, 39]';
 
 if (Part6 == 1)
-	barrier = [25, 30, 35]';
-	for i = 1:size(barrier)
-		sim_down_and_out_option_price(i) = DownAndOutOptionPricingByMonteCarlo(S0, r, sigma, K, barrier(i), T, N_sim);
+	for i = 1:size(barrier_bound)
+		sim_down_and_out_option_price(i) = DownAndOutOptionPricingByMonteCarlo(S0, r, sigma, K, barrier_bound(i), T, N_sim);
 	end
 end
 
 % Part 7:
 %-----------------------
-x_max = 1;
-N_tau_int = 2000;
-N_x_int = 80;
-K = 50;
-barrier = 50;
-r = 0.01;
-sigma = 0.3;
 
 if (Part7 == 1)
-	[V_t, V_s, V] = DownAndOutOptionPricingBySolvingPDE(r, sigma, K, barrier, T, x_max, N_tau_int, N_x_int);
+	for i = 1:size(barrier_bound)
+		[V_t, V_s, V] = DownAndOutOptionPricingBySolvingPDE(r, sigma, K, barrier_bound(i), T, x_max, N_tau_int, N_x_int);
 
-	% plot
-	mesh(V_t, V_s, V);
-	title('Down and Out Option Pricing');
-	xlabel('time');
-	ylabel('spot price');
-	zlabel('barrier option price');
-	saveTightFigure('2.sim_down_and_out_option_price.pdf');
-	pause();
-	close;
+		% plot
+		mesh(V_t, V_s, V);
+		xlabel('time');
+		ylabel('spot price');
+		zlabel('barrier option price');
+		name = ['2.sim_down_and_out_option_price_with_barrier_', num2str(barrier_bound(i)), '.pdf'];
+		pause();
+		saveTightFigure(name);
+		clf;
+		close;
+	end
 end

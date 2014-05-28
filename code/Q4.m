@@ -9,8 +9,7 @@ Part1 = 0;
 Part2 = 0;
 Part3_a = 1;
 Part3_sigma = 0;
-Part3_N = 0;
-Part5 = 0;
+Part3_N = 1;
 
 % Question 1
 %----------------------------------
@@ -50,13 +49,13 @@ end
 
 % Question 3 & 4 & 5
 %----------------------------------
-D = -0.5;
+D = -0.75;
 N = 10;
 a = 10;
 T = 10;
-sigma = 0.5;
-a_bound = (0:5:40)';
-sigma_bound = (0.1:0.5:2.1)';
+sigma = 1;
+a_bound = (0:5:20)';
+sigma_bound = (0.1:0.5:1.6)';
 N_bound = (5:5:20)';
 
 if (Part3_a == 1)
@@ -76,22 +75,9 @@ if (Part3_a == 1)
 		mean_num_default_bank_a(i) = mean(default_time_a(i,:,N+3));
 		var_num_default_bank_a(i) = var(default_time_a(i,:,N+3));
 	end
-	% plot
-	plot(a_bound, ETTau_a, a_bound, VarTTau_a);
-	xlabel('a');
-	legend('E[Ttau_i]', 'Var[Ttau_i]');
-	ylabel('Expected Default Time');
-	saveTightFigure('4.expected_default_time_vs_a.pdf');
-	%pause();
-	close;
 
-	plot(a_bound, mean_num_default_bank_a, a_bound, var_num_default_bank_a);
-	xlabel('a');
-	legend('Average Number of Failed Banks', 'Variance of Failed Banks');
-	ylabel('Number Default Time');
-	saveTightFigure('4.num_default_banks_a.pdf');
-	%pause();
-	close;
+	name = ['system_risk_model_a_', num2str(D)];
+	DefaultReport('a', a_bound, ETTau_a, VarTTau_a, mean_num_default_bank_a, var_num_default_bank_a, name);
 end
 
 if (Part3_sigma == 1)
@@ -108,22 +94,9 @@ if (Part3_sigma == 1)
 		mean_num_default_bank_sigma(i) = mean(default_time_sigma(i,:,N+3));
 		var_num_default_bank_sigma(i) = var(default_time_sigma(i,:,N+3));
 	end
-	% plot
-	plot(sigma_bound, ETTau_sigma, sigma_bound, VarTTau_sigma);
-	xlabel('\sigma');
-	legend('E[Ttau_i]', 'Var[Ttau_i]');
-	ylabel('Expected Default Time');
-	saveTightFigure('4.expected_default_time_vs_sigma.pdf');
-	%pause();
-	close;
 
-	plot(sigma_bound, mean_num_default_bank_sigma, sigma_bound, var_num_default_bank_sigma);
-	xlabel('\sigma');
-	legend('Average Number of Failed Banks', 'Variance of Failed Banks');
-	ylabel('Number Default Time');
-	saveTightFigure('4.num_default_banks_sigma.pdf');
-	%pause();
-	close;
+	name = ['system_risk_model_sigma_', num2str(D)];
+	DefaultReport('\sigma', sigma_bound, ETTau_sigma, VarTTau_sigma, mean_num_default_bank_sigma, var_num_default_bank_sigma, name);
 end
 
 if (Part3_N == 1)
@@ -141,20 +114,7 @@ if (Part3_N == 1)
 		mean_num_default_bank_N(i) = mean(default_time_N(i,:,N+3));
 		var_num_default_bank_N(i) = var(default_time_N(i,:,N+3));
 	end
-	% plot
-	plot(N_bound, ETTau_N, N_bound, VarTTau_N);
-	xlabel('N');
-	legend('E[Ttau_i]', 'Var[Ttau_i]');
-	ylabel('Expected Default Time');
-	saveTightFigure('4.expected_default_time_vs_N.pdf');
-	%pause();
-	close;
 
-	plot(N_bound, mean_num_default_bank_N, N_bound, var_num_default_bank_N);
-	xlabel('N');
-	legend('Average Number of Failed Banks', 'Variance of Failed Banks');
-	ylabel('Number Default Time');
-	saveTightFigure('4.num_default_banks_N.pdf');
-	%pause();
-	close;
+	name = ['system_risk_model_N_', num2str(D)];
+	DefaultReport('N', N_bound, ETTau_N, VarTTau_N, mean_num_default_bank_N, var_num_default_bank_N, name);
 end
