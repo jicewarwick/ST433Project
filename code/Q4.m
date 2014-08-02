@@ -1,15 +1,15 @@
 % Common Costants:
-sigma = 5;
+sigma = 1;
 T = 10;
-N_int = 200;
-N_sim = 200;
+N_int = 100;
+N_sim = 100;
 
 % Part Switch
 Part1 = 0;
 Part2 = 0;
-Part3_a = 1;
-Part3_sigma = 0;
-Part3_N = 1;
+Part3_a = 0;
+Part3_sigma = 1;
+Part3_N = 0;
 
 % Question 1
 %----------------------------------
@@ -49,7 +49,7 @@ end
 
 % Question 3 & 4 & 5
 %----------------------------------
-D = -0.75;
+D = -0.5;
 N = 10;
 a = 10;
 T = 10;

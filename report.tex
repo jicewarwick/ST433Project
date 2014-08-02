@@ -1,5 +1,5 @@
 % -----------------------------------------
-\documentclass[a4paper, draft, 11pt]{article}
+\documentclass[a4paper,11pt]{article}
 
 \usepackage[utf8x]{inputenc}
 \usepackage{amsmath,amssymb,amsthm,amsfonts}
@@ -7,11 +7,11 @@
 \usepackage{fullpage}
 \usepackage{amsmath}
 \usepackage{bbm}
-\usepackage[pdftex]{graphicx}%image support.
+\usepackage[pdftex]{graphicx}
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{comment}
-%\usepackage{natbib}
+\usepackage{natbib}
 \usepackage{fancyhdr}
 \usepackage[hidelinks]{hyperref}
 \usepackage{setspace}
@@ -30,7 +30,7 @@
 	belowskip=3mm,
 	showstringspaces=false,
 	columns=flexible,
-	basicstyle={\small\ttfamily},
+	basicstyle={\scriptsize\ttfamily},
 	numbers=none,
 	numberstyle=\tiny\color{gray},
 	keywordstyle=\color{blue},
@@ -55,34 +55,43 @@
 \begin{document}
 \title{Department of Statistics 2014\\ {\bf Project in Computational Finance and Insurance}\\ {\small Submitted for the Master of Science, London School of Economics} }
 \author{Candidate Number: \bf 17746}
-%\date{}
 \maketitle
 \vfill
 \section*{Abstract}
-This project will make use of Monte Carlo Simulaions to study various models and its implications. We will start with classic Black-Scholes' model and extend it  with stochastic volatility. Moreover, we will look at the ruin theory simulation and systematic risk model.
+This project will make use of Monte Carlo Simulations to study various models and its implications. We will start the with classic Black-Scholes' model and extend it  with stochastic volatility. Moreover, we will look at the ruin theory simulation and systematic risk model.
 \newpage
 
 \tableofcontents
 \newpage
 \section{Introduction}
-Monte Carlo Simulaions play paramount roles in financial simultions. When pricing some financial assets, it is difficult to obtain  explict formuations of their value. Monte Carlo mothod gives us a way to compute the value numerically. As the computational cost at modern time is relatively cheap, we see more and more implementations of Monte Carlo methods used in the finance industry.\\
+Monte Carlo simulations play paramount roles in financial simulations. When pricing some financial assets, it is sometimes difficult to obtain explicit formulations of their values. Monte Carlo method gives us a way to compute the value numerically. As the computational cost at modern time is relatively cheap, we see more and more implementations of Monte Carlo methods used in the financial industry.\\
 
-The theory behind the Monte Carlo mothod relies on the Central Limit Theorem(CLT). Suppose that we want to evaluate the expectation of an random variable($X$) generated from a certain distribution($F$). Given that we can sample $F$ from the uniform distribution, we can get $$\mathbb{E}[X\mathbbm{1}_{(0,1)}] =\int_0^1 Xf(U)dU = \lim_{n\to \infty}\frac{1}{n}\sum^n_{i=1}Xf(U_i)$$ for some $f$. Given enough simulations, we can apply the CLT to ensure that the simulation results are close to the actual expectation with high certainty.\\
+The theory behind the Monte Carlo method relies on the Central Limit Theorem(CLT). Suppose that we want to evaluate an integration $\int_a^bf(x)g(x)dx$ and $g(x)$ is the probability density function for some random variable ($X$) that we can easily simulate. Then $$\int_a^bf(x)g(x)dx = \mathbb{E}[f(X)] = \lim_{n\to \infty}\sum_{i = 1}^nf(X_i)$$
+Sampling from $X$ can be done by various methods such as \cite{Neumann1951} Acceptance-Rejection Algorithm. Given enough simulations, we can apply the CLT to ensure that the simulation results are close to the actual expectation with high certainty.\\
 
-This project will investigate four models used in financial modelling. We choose matlab as our primary tool to simulate these models. We will cover the Black-Scholes' model, Heston model, Ruin Theory model and Systematic Risk model.\\
+To use the Monte Carlo Method in the computer, we use Matlab as our primary tool. Monte Carlo simulations can be done by following code:
+
+\begin{lstlisting}
+for i = 1:N_sim
+	sim_results(i) = f(parameters); % f is the function to be evaluated
+end
+Monte_Carlo_results = mean(sim_resluts);
+\end{lstlisting}
+
+This project will investigate four models used in financial modelling. We will cover the Black-Scholes' model, Heston model, Ruin Theory model and Systematic Risk model.\\
 \section{Black-Scholes' Model}
-The most basic model from the stochastic approach to model stock price is to use the Black-Schole-Merton Model. In this model, the stock price $(S_t)$ is given as
+The most basic model from the stochastic approach to model stock prices is to use the Black-Schole-Merton Model\citep{Black1973}. In this model, the stock price $(S_t)$ is given as
 $$S_t = S_0 \exp\left( (r - \frac{\sigma^2}{2} )t + \sigma W_t \right)$$
 where $r$ is the interest rate, $\sigma$ is the volatility of that stock and $W$ is a standard Brownian motion. Therefore the logarithm of the stock price is a Brownian motion with drift, namely 
 $$\log(S_t) = \log(S_0) + ((r - \frac{\sigma^2}{2} )t + \sigma W_t )$$
 
-There are several ways to simulate a standard Brownian motion. One straightforward approach is to use the first order Euler scheme and discretise the unit time to $N_{int}$ intervals. By the property of independent and stationary increments of Brownian motion, we can determine the distribution of the process at each point given its previous location. Mathematically, we denote $X$ as $\log(S_t)$ and
+There are several ways to simulate a standard Brownian motion. One straightforward approach is to use the first order Euler scheme and discretise each unit time to $N_{int}$ intervals. By the property of independent and stationary increments of Brownian motion, we can determine the distribution of the process at each point given its previous location. Mathematically, we denote $X$ as $\log(S_t)$ and
 $$ \hat{X}_{(j+1)h} = \hat{X}_{jh} +( r-\frac{\sigma^2}{2})h +\sqrt{h} \sigma Z_{j+1}\  \forall j = 0, 1, \dots $$
 where $h = \frac{1}{N_{int}}$ is the time interval between each sampling of the process and $Z_j$s are independent and identically distributed normal random variables with mean 0 and variance 1.\\
 
-Given the same initial price and interest rate, Figure. \ref{fig:1.stock_vs_vol} gives the histgram of $\frac{1}{\sigma}\log(S_t)$ with several different volatilities. As we can see from the figures, as the volatility increases, the mean started to decrease and the spread of the distribution remained similar. This is also clear from its formulation as 
+Given the same initial price and interest rate, figure. \ref{fig:1.stock_vs_vol} gives the histogram of $\frac{1}{\sigma}\log(S_t)$ with several different volatilities. As we can see from the figures, when the volatility increases, the mean started to deline but the spread of the distribution remained similar. This result is also clear from its formulation as 
 $$\frac{1}{\sigma}\log(S_t) = \log(S_0) + (\frac{r}{\sigma} - \frac{\sigma}{2} )t + W_t$$
-and increase in volatility negatively affect the linear drift term in above formula.\\
+and an increase in volatility negatively affects the linear drift term in the formula above.\\
 
 For some exotic options, direct pricing using risk neutral measure method could be difficult. Another way is to use Monte Carlo simulation. A simple implementation of this method is to price a European call option. \\
 
@@ -91,9 +100,8 @@ For some exotic options, direct pricing using risk neutral measure method could 
         \begin{subfigure}[t]{0.45\textwidth}
                 \includegraphics[width=\textwidth]{./fig/{1.logST_hist_sigma0.2}.pdf}
                 \caption{$\sigma = 0.2$}
-        \end{subfigure}%
-        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
-          %(or a blank line to force the subfigure onto a new line)
+        \end{subfigure}
+        ~ 
         \begin{subfigure}[t]{0.45\textwidth}
                 \includegraphics[width=\textwidth]{./fig/{1.logST_hist_sigma0.4}.pdf}
                 \caption{$\sigma = 0.4$}
@@ -111,11 +119,11 @@ For some exotic options, direct pricing using risk neutral measure method could 
 		\label{fig:1.stock_vs_vol}
 \end{figure}
 
-Other than computing price of an european option from Black-Scholes' model, we could price it through Monte Carlo simulation. Computer could simulate a large amount of stock price paths. With enough simulation and Law of Large Numbers, we can conclude that the sample mean of our option price simulation converge to the true value of the option. For instance, the theoratical price for an european call option with $S_0 = 40$, $r = 0.03$, $\sigma = 0.9$, $K = 40$ and $T = 1$ is 14.28. The Monte Carlo simulation of the same parameter with 10000 simulations could get 14.47, a very closed answer.\\
+Other than computing price of a European option from Black-Scholes' model, we could price it through Monte Carlo simulation. Computer could simulate a large amount of stock price paths. With enough simulation and CLM, we can conclude that the sample mean of our option price simulation converge to the true value of the option. For instance, the theoretical price of a European call option with $S_0 = 40$, $r = 0.03$, $\sigma = 0.9$, $K = 40$ and $T = 1$ is 14.28. The Monte Carlo simulation of the same parameter with 10000 simulations could get 14.47, a very closed answer.\\
 
-Using Monte Carlo simulation, we can observe the relationship between the price, the strike, the maturity. Figure \ref{fig:1.call_price_by_change_T} shows that increase in the maturity would increase the price of call options if all other parameters were the same. This can be explained from two respective. First of all, given the strike and positive drift, longer maturity inflates the stock price linearly. On the other hand, if the stock price is below the strike, longer maturity offers more opportunities to swing above the strike price and give a positive return. Another interesting phenomena is that using the same number of simulation, the cureve we get become less smooth(as in larger change in the gradient).\\%more?
+Using Monte Carlo simulation, we can observe the relationship between the price, the strike, the maturity. Figure \ref{fig:1.call_price_by_change_T} shows that increase in the maturity would increase the price of call options if all other parameters were the same. This can be explained from two perspectives. First of all, given the strike and positive drift, longer maturity inflates the stock price exponentially. On the other hand, if the stock price is below the strike, longer maturity offers more opportunities to swing above the strike price and give a positive return. Another interesting phenomena is that using the same number of simulation, the curve we get become less smooth(as in larger change in the gradient).\\%more?
 
-On the other hand, Using the same parameters as before and take $\sigma = 0.2$ we can identiy the change in the call price with respect to the change in the strike(Figure \ref{fig:1.call_price_by_change_K}). It is immediate to see that the call price decreases as the strike increases. This result is clear as for all realised $S_T$, increase in K would decrease the call payoff ($(S_T-K)^+$). When the strike is far away from the spot price, the value of the call price is very close to the value of $(S_T-K)^+$(the green line). This is because when strike is small, the option has a very large probability to get exercised. On the other hand, a very high strike would lead to virtually no chance of being exercised, hence valuing very close to 0.\\
+On the other hand, using the same parameters as before and take $\sigma = 0.2$ we can identify the change in the call price with respect to the change in the strike(Figure \ref{fig:1.call_price_by_change_K}). It is immediate to see that the call price falls as the strike increases. This result is clear as for all realised $S_T$, an increase in K would decrease the call payoff ($(S_T-K)^+$). When the strike is far away from the spot price, the value of the call price is very close to the value of $(S_T-K)^+$(the green line). This is because when the strike is small, the option has a very large probability to get exercised. On the other hand, a very high strike would lead to virtually no chance of being exercised, hence valuing very close to 0.\\
 
 \begin{figure}[htbp]
 	\centering
@@ -133,8 +141,8 @@ On the other hand, Using the same parameters as before and take $\sigma = 0.2$ w
 	\caption{Call price with different K and T}
 \end{figure}
 
-\section{Stochastic Volativity -- Heston Model}
-Now, we consider a stochastic volativity model formulated as 
+\section{Stochastic volatility -- Heston Model}
+Now, we consider a stochastic volatility model formulated as 
 \begin{equation}
 	\begin{aligned}
 		dS_t &= S_t(rdt+\sqrt{V_t}dW_t) \\
@@ -142,16 +150,18 @@ Now, we consider a stochastic volativity model formulated as
 	\end{aligned}
 	\label{eq:Heston Model}
 \end{equation}
-where W and B are two standard Brownian Motions with correlation coefficient $\rho \in (-1,1)$.\\
+where W and B are two standard Brownian motions with correlation coefficient $\rho \in (-1,1)$.\\
 
-This is Heston Model named after mathematician Steven Heston. Compared with previous model, the volativity is not deterministic. It is a Cox–Ingersoll–Ross(CIR) process, a well known mean-aversion process. \\
+This is Heston Model\citep{Heston1993} named after mathematician Steven Heston. Compared with previous model, the volatility is not deterministic. The volatility dynamic describes a mean aversion process as when the $V_t$ is below $\beta$, the linear drift become positive and pushes the volatility up towards $\beta$. If the volatility is larger than $\beta$, the drift term becomes negative and forces the volatility downwards to $\beta$. This process is also known as Cox–Ingersoll–Ross(CIR) process.\citep{Cox1985}\\
 
-To simulate the stock price in this model, we need first to simulate its volativity process. In this case, the standard first order Euler scheme can be used. We firstly generate two sequence of stationary and independent increments($\Delta B_1$ and $\Delta B_2$) with distribution $\mathcal{N}(0,\frac{1}{h})$ where $h$ is the length of each interval after discretisation. A correlated increments process $\Delta W$ can be generated by $\rho\Delta B_1 + \sqrt{1-\rho^2}\Delta B_2$. Then, cumulative sum of $\Delta B_1$ and $\Delta W$ would be exact scheme simulations of standard Brownian motions with correlation $\rho$. Using these two Brownian motions, we can generate the volativity process by 
+To simulate the stock price in this model, we need first to simulate its volatility process. In this case, the standard first order Euler scheme can be used. We firstly generate two sequence of independent increments($\Delta B_1$ and $\Delta B_2$) with distribution $\mathcal{N}(0,\frac{1}{h})$ where $h$ is the length of each interval after discretisation. A correlated increments process $\Delta W$ can be generated by $\rho\Delta B_1 + \sqrt{1-\rho^2}\Delta B_2$. Then, cumulative sum of $\Delta B_1$ and $\Delta W$ would be exact scheme simulations of standard Brownian motions with correlation $\rho$. Using these two Brownian motions, we can generate the volatility process by 
 $$\hat{V}_{(j+1)h} = \hat{V}_{jh} + \alpha(\beta - \hat{V}_{jh})h + \gamma \sqrt{V_t} \Delta B_{1_{j+1}}$$
-By applying It$\hat{o}$'s formula, we can conclude that
+By applying It$\hat{o}$'s formula to $ln(S_t)$ and rearrange terms, we can conclude that
 $$S_t = S_0 \exp\left( (r - \frac{V_t}{2} )t + \sqrt{V_t} W_t \right)$$
 Hence, 	$$\log({S_{t+1}}) = \log({S_t}) + (r-\frac{V_t}{2})h + \sqrt{V_t} \Delta W_t \qquad \forall j = 0, 1, \dots$$
-However, the volativity process could go below 0 as the support of the Normal distribution is $\mathbb{R}$ and $\Delta B$ could be arbitraly small negative number. Therefore, a better model would bound the volativity process below to 0. This would be easily done by take the positive part of the volativity process in each simulation step. Figure \ref{fig:Heston_stock_price} shows one realisation of the Heston Mode.\\
+can be simulated similarly as in Black-Scholes' model in last section.\\
+
+However, the volatility process could go below 0 as the support of the Normal distribution is $\mathbb{R}$ and $\Delta B$ could be arbitrarily small negative number. Therefore, a better model would bound the volatility process below to 0. This would be easily done by taking the positive part of the volatility process in each simulation step. Figure \ref{fig:Heston_stock_price} shows one realisation of the Heston Model.\\
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.6\textwidth]{./fig/{2.stock_price_under_Heston}.pdf}
@@ -159,7 +169,7 @@ However, the volativity process could go below 0 as the support of the Normal di
 	\label{fig:Heston_stock_price}
 \end{figure}
 
-Using this model we can, again, compute european call option price using Monte Carlo method. Figure \ref{fig:call_vs_T} shows the change in the call price due to the difference in maturity while keep other variables constant and strike being 40. The trend of the call price is very similar the one in the Black-Scholes' model. The price increases when the maturity increases. The call prices obtained in these two models are also very similar. However, we expect smoothly increasing curves as all the random varibles in the formulation are continuous and monotonic. However, the curve we got, especially when $T$ approaches 1, became unstable. One way to mitigate the variation is to increase the number of the Monte Carlo simultions.\\
+Using this model we can, again, compute European call option price using Monte Carlo method. Figure \ref{fig:call_vs_T} shows the change in the call price due to the difference in maturity while keep other variables constant and strike being 40. The trend of the call price is very similar to the one from the Black-Scholes' model. The price rises when the maturity increases. Call prices obtained in these two models are also very similar. However, we expect smoothly increasing curves as all the random variables in the formulation are continuous and monotonic. However, the curve we got, especially when $T$ approaches 1, became unstable. One way to mitigate the variation is to increase the number of the Monte Carlo simulations.\\
 
 \begin{figure}[htbp]
 	\centering
@@ -177,23 +187,22 @@ Using this model we can, again, compute european call option price using Monte C
 	\caption{Monte Carlo Call Option Pricing}
 \end{figure}
 
-Similarly, we plot call price against the strike. Figure \ref{fig:call_vs_K} illustrates change in call price with respect to the strike. Clearly, the call price decreases as the strike price goes up. \\
+Similarly, we plot call price against the strike. Figure \ref{fig:call_vs_K} illustrates change in call price with respect to the strike. Clearly, the call price falls as the strike price goes up. \\
 
-In reality, call prices can be directly obtained from the market and the instantaneous volativity is not trival to get. Therefore, analysts would calculate stock's implied volativity. Implied volativity is the volativity that if used in the Black-Scholes' model, call price computed from the model matches the market price. It is an indicator of the actual volativity of the stock. Using data from previous simulation, we plot the implied volativity against the strike (Figure \ref{fig:implied_vol}). We can see that the implied volativity is at its lowest point while the strike is around the spot price.\\
+In reality, call prices can be directly obtained from the market but the instantaneous volatility is not trivial to get. Therefore, analysts would calculate stock's implied volatility. Implied volatility is the volatility that if used in the Black-Scholes' model, call price computed from the model matches the market price. It is an indicator of the actual volatility of the stock. Using data from previous simulation, we plot the implied volatility against the strike (Figure \ref{fig:implied_vol}). We notice that the implied volatility is at its lowest point while the strike is around the spot price. The volatility smile can be detected from a variety of option classes.  It is believed that investor reassess the probabilities of black swans have led to higher prices for out-the-money options.\citep[p. 335]{Hull}\\
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.6\textwidth]{./fig/{2.implied_vol}.pdf}
-	\caption{Volativity Smile}
+	\caption{volatility Smile}
 	\label{fig:implied_vol}
 \end{figure}
-Another catalogue of option is called barrier options. The option is very similar to European options. Barrier options have extra conditions on the path of the stock evolution. For example, the down-and-out call option with barrier $B$ and strike $K$ pays $(S_T-K)^+$ if the stock price stays above $B$ unti maturity.\\
 
-It is clear that it is more complicated to price the barrier option as the whole path is relavent. The Monte Carlo method can easily intergrate the barrier condition. After simulating the stock price process, we can check each process given the barrier condition and knock out the ones that cross the barrier.\\
+Barrier options are another catalogue of options. These options are very similar to European options. These options have extra conditions on the path of the stock evolution. For example, the down-and-out call option with barrier $B$ and strike $K$ pays $(S_T-K)^+$ if the stock price stays above $B$ unit maturity.\\
 
-Given that barrier option has more condition to yield positive return than its european counterpart, we see that the market price of barrier options are cheaper than the european options with the same strike.\\
+It is clear that it is more complicated to price the barrier option as the whole path is relevant. The Monte Carlo method can easily integrate the barrier condition. After simulating the stock price process, we can check each process with the barrier condition and knock out the ones that cross the barrier.\\
 
-Another approach to price the option is to transform the expectation of discounted price to corresponding Partial Differential Equation(PDE). In this case, let $V_t$ be the price of the down-and-out call option. Then, its corresponding Black-Scholes' PDE \cite[p. 79]{note417} is
+Another approach to price the option is to transform the expectation of discounted price to corresponding Partial Differential Equation(PDE). In this case, let $V_t$ be the price of the down-and-out call option. Then, its corresponding Black-Scholes' PDE \citep[p. 79]{Veraart2014} is
 \begin{gather}
 	V_t(t,s) + \frac{1}{2} + \sigma^2 s^2 V_{ss}(t,s) + rsV_s(t,s) = rV(t,s)\nonumber\\
 	V(T,s) = (s-K)^+\\
@@ -201,8 +210,8 @@ Another approach to price the option is to transform the expectation of discount
 	\label{eq:BS-PDE}
 \end{gather}
 
-One way to solve this PDE is to transform it into a heat equation. Using the result from %
-, we know that if $u$ satisfies
+One way to solve this PDE is to transform it into a heat equation. Using the result from \citet[p. 79]{Veraart2014}
+, we know that if $u(\tau, x)$ satisfies
 \begin{gather}
 	\frac{\partial u(\tau,x)}{\partial \tau} = \frac{\partial^2 u(\tau,x)}{\partial x^2}\nonumber\\
 	u(0,x) = \exp(\frac{1}{2}(-1+\frac{2r}{\sigma^2})x)(e^x-1)\\
@@ -216,14 +225,11 @@ Then,
 \end{equation}
 solves equation \ref{eq:BS-PDE}.\\
 
-For a general boundary condition, the heat equation may not have an explict solution. Fortunately, there are several numerical schemes to approximate the its solution. One stable scheme is the Crank-Nicolson scheme\cite[p.88]{note417}. In this case, the boundary condition specifies the value when $\tau$ is 0. This scheme consructed a iteration matrix so that we can repeatly apply the matrix to get the solution for a greater $\tau$. \\
+For a general boundary condition, the heat equation may not have an explicit solution. Fortunately, there are several numerical schemes to approximate the its solution. One stable scheme is the Crank-Nicolson scheme\citep[p.88]{Veraart2014}.  In this case, the boundary condition specifies the value when $\tau$ is 0. This scheme constructed an iteration matrix so that we can repeatedly apply the matrix to get the solution for a greater $\tau$. \\
 
-In addition to the example given in the lecture notes, we need add the barrier condition to each iteration after applied the transformation matrix. The barrier can be easily added as $S_t < B \iff x < \log(\frac{B}{K})$. On the other hand, given the formulation in Equation \ref{eq:BS-PDE}, we can conclude that the solution is continuous. Therefore, given that the interval after discretisation is small enough, we can approximate $u(\tau,x_{max})$ by $u(\tau,x_{max-1})$. \\
+In addition to the example given in the lecture notes, we need to add the barrier condition to each iteration after applied the transformation matrix. The barrier can be easily added as $S_t < B \iff x < \log(\frac{B}{K})$. On the other hand, given the formulation in Equation \ref{eq:BS-PDE}, we can conclude that the solution is continuous. Therefore, given that the interval after discretisation is small enough, we can approximate $u(\tau,x_{max})$ by $u(\tau,x_{max-1})$. \\
 
-Figure \ref{fig:down_and_out_option_pricing_by_solving_pde} shows the price of down and out options with differnt barriers. We see that the option price is 0 if the spot price at anytime is below the barrier. Also, at time $T$, value of the option is identical to its european counterpart. Moreover, since the value of the barrier option increases in value as the option matures, we deduce that the barrier option is cheaper than its european counterpart with same parameters. \\
-
-To hedge a down and out option, we %
-
+Figure \ref{fig:down_and_out_option_pricing_by_solving_pde} shows the price of down and out options with different barriers. We note that the option price is 0 if the spot price is below the barrier. Also, at time $T$, value of the option is identical to its European counterpart. Moreover, since the value of the barrier option increases in value as the option matures, we deduce that the barrier option is cheaper than its European counterpart with the same parameters. For the options with the same strike, the one with a large barrier is cheaper than the one with lower barrier.\\
 \begin{figure}[htbp]
 	\centering
 	\begin{subfigure}[t]{0.45\textwidth}
@@ -249,15 +255,21 @@ To hedge a down and out option, we %
 	\label{fig:down_and_out_option_pricing_by_solving_pde}
 \end{figure}
 
+To hedge a down and out option, we can short sell European claim $G(S_T)$
+$$G(S_T) = (g(S_T) + \frac{S_T}{B}g(\frac{B^2}{S_T})\mathbbm{1}_{S_T>B}$$
+where $g(x) = (x-K)^+$.
+If and when tbe barrier was reached, buy the $G(S_T)$ claim back at 0 cost.
+
+
 \section{Ruin Probability in Finite Time}
-Ruin theory is essential to the insurance industry. Ruin theory studies the probability of an instance company fail to comply with its obligations to its policy holders. The essential point of the theory is to monitor company's reserves $U_t$. One simple model is that the company receieves a continuous stream of premium at rate of $c$ and the claims comes as coumpound poisson process. mathematically,
+Ruin theory is critical in the insurance industry. Ruin theory studies the probability of an instance company fails to comply with its obligations to its policy holders. The essential point of the theory is to monitor company's reserves $U_t$. One simple model is that the company receives a continuous stream of premium at rate of $c$ and the claims comes as compound poisson process. mathematically,
 \begin{equation}
 	U_t = u + ct + \sum_{i=1}^{N_t}Y_i
 	\label{eq:U_t}
 \end{equation}
 where $u$ is the initial reserve, $N_t$ has poisson distribution with intensity $\lambda$, and $Y_i$s are independent exponential random variable with mean $\frac{1}{\alpha}$ and are independent of $N$.\\
 
-The exponential distribution plays an important role in this process. Not to mention that the jump size $Y$ follows the exponential distribution, the inter-arrical time of the poisson process is also exponentially distributed. The majority of the mass of the distribution is concerntrated in the very left and the density decreases exponentially. However, the support of the distribution is $\mathbb{R}$ and it still can ocationally produce a very large number. (Figure \ref{fig:hist_exp})\\
+The exponential distribution plays an important role in this process. Not to mention that the jump size $Y$ follows the exponential distribution, the inter-arrival time of the poisson process is also exponentially distributed. The majority of the mass of the distribution is concentrated in the very left and the density falls exponentially. However, the support of the distribution is $\mathbb{R}$ and it still can occasionally produce a very large number. (Figure \ref{fig:hist_exp})\\
 
 \begin{figure}[htbp]
 	\centering
@@ -266,11 +278,11 @@ The exponential distribution plays an important role in this process. Not to men
 	\label{fig:hist_exp}
 \end{figure}
 
-To simulate this process, we need to split the process into three parts. The first part ($u+ct$) is a linear drift term and can be calculated directly. Secondly, we need to be able to simulate exponential random variables. Given uniform number generator in computer system, we can obtain a uniform random variable ($X$) between 0 and 1. Then, $-\frac{1}{\lambda}(log(1-X)$ would follow $Exp(\lambda)$ distribution\cite[p. 12]{note417}. \\
+To simulate this process, we need to split the process into three parts. The first part ($u+ct$) is a linear drift term and can be calculated directly. Secondly, we need to be able to simulate exponential random variables. Given uniform number generator in a computer system, we can obtain a uniform random variable ($X$) between 0 and 1. Then, $-\frac{1}{\lambda}(log(1-X)$ would follow $Exp(\lambda)$ distribution\cite[p. 12]{Veraart2014}. \\
 
 Thirdly, we need to be able to generate poisson processes. Poisson processes are jumping processes with exponential inter-arrival time. We can generate inter-arrival times from corresponding exponential distribution and filling the value in the process with the number of jumps happened yet.\\
 
-Figure \ref{fig:U_vs_all} shows the reserve process $U_t$ with various parameters. $u$ detarmines the initial value of the process. $c$ is the continuous premium rate. It determines the slope of the linear part of the process. We see steeper lines with larger $c$. $\lambda$ is the intensity of the claim. When $\lambda$ inceases, we see more negative jumps which means that claims come more often. $\frac{1}{\alpha}$ is the mean size of the claim. Therefore, larger $\alpha$ means smaller negative jump in the process.\\
+Figure \ref{fig:U_vs_all} shows the reserve process $U_t$ with various parameters. $u$ determines the initial value of the process. $c$ is the continuous premium rate. It determines the slope of the linear part of the process. We see steeper lines with larger $c$. $\lambda$ is the intensity of the claim. When $\lambda$ rises, we see more negative jumps which means that claims come more often. $\frac{1}{\alpha}$ is the mean size of the claim. Therefore, larger $\alpha$ means smaller negative jump in the process.\\
 \begin{figure}[htbp]
 	\centering
 	\begin{subfigure}[t]{0.45\textwidth}
@@ -296,7 +308,7 @@ Figure \ref{fig:U_vs_all} shows the reserve process $U_t$ with various parameter
 	\label{fig:U_vs_all}
 \end{figure}
 
-The main purpose of the model is to model the reseves and be cautious of the ruin of insurance companies. Namely, the possibility of the company do not have enough reserve at hand to fulfill an newly arried claim. We define $\tau_T = \inf\{t\in[0,T]:U_t<0\}$. It repsents the final resserve of an insurance company. If the company is ruined before time $T$, the final reserve would be of the size of unsettled claims. If the company survived till time $T$, then $U_{\tau_T}$ would be its final reserve at $T$. Figure \ref{fig:-UTau5_hist} shows a histogram of $-U_{\tau_5}$ with three differnt initial reserve. The figure \ref{fig:-UTau5_hist_u_0.5} has a small initial reserve ($u = 0.5$) and we see a clear concentration around the origin. This indicates high probability of ruin. The positive part of the histogram is of shape of exponential distribution. When the initial reserve increase, the ruin probability increases and the peak around 0 disappeared when $u = 4$. The negative parts in the histogram repsents the healthy companies. %Analytical  can show that the peak is around $u+T(c-\lambda/alpha$
+The main purpose of the model is to model the reserves and be cautious of the ruin of insurance companies. Namely, the possibility of the company does not have enough reserve at hand to fulfill a newly arrived claim. We define $\tau_T = \inf\{t\in[0,T]:U_t<0\}$. It represents the final reserve of an insurance company. If the company is ruined before time $T$, the final reserve would be of the size of unsettled claims. If the company survived till time $T$, then $U_{\tau_T}$ would be its final reserve at $T$. Figure \ref{fig:-UTau5_hist} shows a histogram of $-U_{\tau_5}$ with three different initial reserve. Figure \ref{fig:-UTau5_hist_u_0.5} has a small initial reserve ($u = 0.5$) and we see a clear concentration around the origin. This indicates a high probability of ruin. The positive part of the histogram is of shape of exponential distribution. When the initial reserve goes up, the ruin probability increases and the peak around 0 disappeared when $u = 4$. The negative parts of the histogram represents the healthy companies. %Analytical  can show that the peak is around $u+T(c-\lambda/alpha$
 \begin{figure}[htbp]
 	\centering
 	\begin{subfigure}[t]{0.45\textwidth}
@@ -321,7 +333,7 @@ The main purpose of the model is to model the reseves and be cautious of the rui
 	\label{fig:-UTau5_hist}
 \end{figure}
 
-Moreover, we can determine the realtive affects of other parameters in the model. Table \ref{tab:ruin_vs_all} gives more statistics about the ruin probability for differnt parameters. It is immediate from the definition that $\tau_t$ is a subordiantor with respect to t.  We can see that inceases in $c$ or decrease in $\lambda$ would lead to smaller probability of ruin. \\
+Moreover, we can determine the relative effects of other parameters in the model. Table \ref{tab:ruin_vs_all} gives more statistics about the ruin probability for different parameters. It is immediate from the definition that $\tau_t$ is a subordinator with respect to $t$.  We can see that increases in $c$ or decrease in $\lambda$ would lead to a smaller probability of ruin. \\
 
 \begin{table}
 	\centering
@@ -330,19 +342,18 @@ Moreover, we can determine the realtive affects of other parameters in the model
 	\input{./fig/ruin_vs_c.tex}
 	\quad
 	\input{./fig/ruin_vs_lambda.tex}
-	\caption{Ruin Probanility with differnt parameter}
+	\caption{Ruin Probability with different parameter}
 	\label{tab:ruin_vs_all}
 \end{table}
 
-The model above have no factors other than claims that affect the company's reserve. However, this is an unrealistic assumption. The company would have some investments into outside projects and others may be interested in investing in the insurance company as well.  If we assume independent and stationary change of net investment and the change being normally distributed, we can form a new model as follow
+The model above has no factors other than claims that affect the company's reserve. However, this is an unrealistic assumption. The company would have some investments into outside projects and others may be interested in investing in the insurance company as well.  If we assume independent and stationary change of net investment and the change being normally distributed, we can form a new model as follows
 \begin{equation}
 	U_t = u + ct + \sigma W_t + \sum_{i=1}^{N_t}Y_i
 	\label{eq:U_t_BM}
 \end{equation}
 where $W$ is the standard Brownian motion.\\
 
-The New Model has a new source of uncertainty. We are interested in what the new Brownian motion in the reserve process would affect the performance of a company. Figure \ref{fig:U_with_BM_vs_all} shows four possible path of $U_t$ with different value of parameters. Since the Brownian motion has 0 expectation at any given $t$, the mean of the process is the same as the previous model. On the other hand, the Brownian motion significantly changed the default probability of the process. In the previous model, the only downward force is the coumpound poisson process and it takes an exponentially distributed time to get another claim. When Brownian motion is present, there is constantly downward movements. Although the mean is unchanged, the possiblity of get below 0 increases significantly. Table \ref{tab:ruin_vs_all_with_BM} shows the ruin probability by varying $u$, $\sigma$ and $\lambda$. Similar patten between the default time and $u$ and $\lambda$ can be spotted. Increase in sigma leads to a higher probability of default. The effect of the Brownian motion can also be spotted in the histogram of $-T_{\tau_5}$. Figure \ref{fig:-UTau5_hist_sigma_0.3} and \ref{fig:-UTau5_hist_sigma_1} give a very large peak around 0.
-
+The New Model has a new source of uncertainty. We are interested in what the new Brownian motion in the reserve process would affect the performance of a company. Figure \ref{fig:U_with_BM_vs_all} shows four possible paths of $U_t$ with different value of parameters. Since the Brownian motion has 0 expectation at any given $t$, the mean of the process is the same as the previous model. On the other hand, the Brownian motion significantly changed the default probability of the process. In the previous model, the only downward force is the compound poisson process and it takes an exponentially distributed time to get another claim. When Brownian motion is present, there is constantly downward movements. Although the mean is unchanged, the possibility of getting below 0 grows significantly. Table \ref{tab:ruin_vs_all_with_BM} shows the ruin probability by varying $u$, $\sigma$ and $\lambda$. Similar pattern between the default time and $u$ and $\lambda$ can be spotted. Increase in $\sigma$ leads to a higher probability of default. The effect of the Brownian motion can also be spotted in the histogram of $-T_{\tau_5}$. Figure \ref{fig:-UTau5_hist_sigma_0.3} and \ref{fig:-UTau5_hist_sigma_1} give a very large peak around 0.\\
 
 \begin{figure}[htbp]
 	\centering
@@ -424,20 +435,20 @@ The New Model has a new source of uncertainty. We are interested in what the new
 	\input{./fig/ruin_vs_sigma_with_simga.tex}
 	\quad
 	\input{./fig/ruin_vs_lambda_with_simga.tex}
-	\caption{Ruin Probanility with differnt parameter and Brownian motion}
+	\caption{Ruin Probability with different parameter and Brownian motion}
 	\label{tab:ruin_vs_all_with_BM}
 \end{table}
-Compared with the the initial figure where $\sigma=0$, the ruin probability increased along with increase of $\sigma$ for each of $u$. The affect is exceptionally significant when $u$ is small as Brownian motion has infinite variation. When $u$ is small, the movement of the Brownian motion could easily force the process to become negative. While the Brownian motion is continuous, we see a peak very close to the origin. 
+Compared with the initial figure where $\sigma=0$, the ruin probability increases along with an increase of $\sigma$ for each of $u$. The effect is exceptionally significant when $u$ is small as Brownian motion has infinite variation. When $u$ is small, the movement of the Brownian motion could easily force the process to become negative. While the Brownian motion is continuous, we see a peak very close to the origin. 
 
 \section{Systematic Risk}
-In this section, we study the reserves in the Banking sector. We assume that the changes in each bank's reserve is independent and stochastic. However, all banks are connected by their lending activity to each other. Parameter $a$ describes the willingness of lending in the system. We can also interpretate it as how inter-connnected the banking system is. The model is formulted as 
+In this section, we study the reserves in the banking sector. We assume that the changes in each bank's reserve is independent and stochastic. However, all banks are linked by their lending activity to each other. Parameter $a$ describes the willingness of lending in the system. We can also interpret it as how inter-connected the banking system is. The model is formulated as 
 \begin{equation}
 	dX^i_t = a(\bar{X}_t-X^i_t)dt + \sigma dW_t^i
 	\label{eq:SystemRiskModel}
 \end{equation}
-where $X_t^i$ is the log reserve of bank $i$. $\bar{X}_t = \frac{1}{N}\sum^N_{i=1}X^i_t$ is the average log reserve at time t. Banks with high reserves tends to lend to the ones with smaller reserve. Each $W^i$ are considered to be independent Brownian motion and they all share same constant volativity $\sigma$. We set the initial reserve $X_0^i = 0 \ \forall i$.\\
+where $X_t^i$ is the log reserve of bank $i$. $\bar{X}_t = \frac{1}{N}\sum^N_{i=1}X^i_t$ is the average log reserve at time $t$. Banks with high reserves tends to lend to the ones with smaller reserve. Each $W^i$ are considered to be independent Brownian motion and they all share same constant volatility $\sigma$. We set the initial reserve $X_0^i = 0 \ \forall i$.\\
 
-Using the first Euler Scheme, we can easily simulate banks' reserves in Matlab. Figure \ref{fig:SystemRiskModel} show the evolution of banks' reserves with different $a$ for a system of 10 banks. When $a$ is 0, this is essentially a system of independent Brownian motions. We see that their final reserve are independent as well. In this system, bank failures are purely due to their associated Brownian motions. However, when $a$ is 10, reserves of banks cluster together and they have roughly the same path. This results that their final reserve are quite similar. In this case, one bank's reserve not only depends on its Brownian motion, but more importantly, other banks' reserve. In some simulations, we can find that all banks have fairly large reserves and the system thrives. However, it is possible that all banks have little reserve and result in large numbers of bank-runs. We will now offer some numerical insights into the problem.\\
+Using the first Euler scheme, we can easily simulate banks' reserves in Matlab. Figure \ref{fig:SystemRiskModel} show the evolution of banks' reserves with different $a$ for a system of 10 banks. When $a$ is 0, this is essentially a system of independent Brownian motions. We see that their final reserves are independent as well. In this system, bank failures are purely due to their associated Brownian motions. However, when $a$ is 10, reserves of banks cluster together and they have roughly the same path. This results that their final reserves are quite similar. In this case, one bank's reserve not only depends on its Brownian motion, but more importantly, other banks' reserve. In some simulations, we discover that all banks have fairly large reserves and the system thrives. However, it is possible that all banks have little reserve and result in large numbers of bank-runs. We will now offer some numerical insights into the problem.\\
 
 \begin{figure}[htbp]
 	\centering
@@ -454,7 +465,7 @@ Using the first Euler Scheme, we can easily simulate banks' reserves in Matlab. 
 	\label{fig:SystemRiskModel}
 \end{figure}
 
-Fistly, we set the par for insolvency. When log reserve is below $D = -0.5$, namely, if bank reserve is less than 60\% of its initial value, we declear that the bank is insolvent. We denote $\tau_i = \inf\{t:X_t^i<D\}\wedge T$ be the default time for that bank if $\tau_i$ is less than $T$. 
+Firstly, we set the par for insolvency. When log reserve is below $D = -0.5$, namely, if bank reserve is less than 60\% of its initial value, we declare that the bank is insolvent. We denote $\tau_i = \inf\{t:X_t^i<D\}\wedge T$ be the default time for that bank if $\tau_i$ is less than $T$. \\
 
 \begin{table}[bhtp]
 	\centering
@@ -463,14 +474,10 @@ Fistly, we set the par for insolvency. When log reserve is below $D = -0.5$, nam
 	\input{./fig/system_risk_model_sigma_-0.5.tex}
 	\quad
 	\input{./fig/system_risk_model_N_-0.5.tex}
-	\caption{Ruin Probanility with $D=-0.5$}
+	\caption{Ruin Probability with $D=-0.5$}
 	\label{tab:system_risk_D_-0.5}
 \end{table}
-Table \ref{tab:system_risk_D_-0.5} shows the relationship between the default time, $a$, $\sigma$ and $N$. As it turns out, increase in $a$ would, on average, prolong the lifetime of a bank and we expect less banks to fail. However, as banks become inter-linked, the variance of their default time also gets smaller. It is new more likely to get systematic failure.\\
-
-Increase in the $\sigma$ make the whole system more volatile, and more banks default more quickly. Due to this fact, we do not see significant change in the variance of default time. \\
-
-If we increase the number of banks to begin with, we can see that the banks survive longer and smaller percentage of banks fails. Moreover, the system becomes more stable as the variance of default time keeps constant and we have more banks to share the risks. \\
+Table \ref{tab:system_risk_D_-0.5} shows the relationship between the default time, $a$, $\sigma$ and $N$. As it turns out, increase in $a$ would more connected (figure \ref{fig:SystemRiskModel}) and as banks become inter-linked, the variance of their default time also gets smaller. It is now more likely to get a systematic failure. On the other hand, we see interesting effects on the expected default time. We observe that when we increase $a$, the default time falls initially and then rises. This could be because that if initially some banks start to fail and some other bank that is likely to default could be dragged by bad lending to the bad bank. When $a$ is large enough, the healthy bank that have larger difference in its reserves, so that they contribute enough to save the failing bank and keep the defaults from spreading. This phenomena is more obvious when the par is high(table \ref{tab:system_risk_D_-0.25}).\\
 
 \begin{table}[bhtp]
 	\centering
@@ -479,9 +486,13 @@ If we increase the number of banks to begin with, we can see that the banks surv
 	\input{./fig/system_risk_model_sigma_-0.25.tex}
 	\quad
 	\input{./fig/system_risk_model_N_-0.25.tex}
-	\caption{Ruin Probanility with $D=-0.25$}
+	\caption{Ruin Probability with $D=-0.25$}
 	\label{tab:system_risk_D_-0.25}
 \end{table}
+Increase in the $\sigma$ make the whole system more volatile, and more banks default more quickly. Due to this fact, we do not see significant change in the variance of default time. \\
+
+On the other hand, we do not see significant change in the system when we vary the number of banks in the beginning. We find similar percentage of banks failing when other parameters are the same.  
+
 \begin{table}[bhtp]
 	\centering
 	\input{./fig/system_risk_model_a_-0.75.tex}
@@ -489,24 +500,19 @@ If we increase the number of banks to begin with, we can see that the banks surv
 	\input{./fig/system_risk_model_sigma_-0.75.tex}
 	\quad
 	\input{./fig/system_risk_model_N_-0.75.tex}
-	\caption{Ruin Probanility with $D=-0.75$}
+	\caption{Ruin Probability with $D=-0.75$}
 	\label{tab:system_risk_D_-0.75}
 \end{table}
-Table \ref{tab:system_risk_D_-0.25} and \ref{tab:system_risk_D_-0.75} give more information when we change the standard lever of default $D$. As we would expect, when we decrease the required level of reserve($D$), we see that banks would survive longer.\\
+Table \ref{tab:system_risk_D_-0.25} and \ref{tab:system_risk_D_-0.75} give more information when we change the standard level of default $D$. As we would expect, when we reduces the required level of reserve($D$), we see that banks would survive longer.\\
 
-This model offers some possible actions against massive bank-runs. Increasing banks' inter-connectiveness would lead to a more stable banking system. Decrease the volativity also helps all banks to avoid defaulting. Increasing market participants may also benefit the banking system.
-
+This model offers some possible actions against massive bank-runs. Greatly icreasing banks' inter-connectiveness would result in a more stable banking system. But we have to be cautious about possible systematic fialures. Reducing the volatility also helps all banks to avoid default. \\
 
 \section{Conclusion}
-This project used Monte Carlo simulating to investigate several models, incluing Black-Scholes' model and Heston model for asset pricing, Ruin Theory model for insurance companies and systematic risks model for banking regulations. Monte Carlo method proved to be powerful in financial applications.
+This project used Monte Carlo simulating to investigate several models, including Black-Scholes' model and Heston model for asset pricing, Ruin Theory model for insurance companies and systematic risks model for banking regulations. Monte Carlo method proved to be powerful in financial applications.\\
+\bibliographystyle{agsm}
+\bibliography{Reference}
 \newpage
-\begin{thebibliography}{9}
-	\bibitem{note417}
-	  Luitgard A. M. Veraat,
-		\emph{MA417/ST433 Computational Mehtods in Finance}.
-		London School of Economics and Political Science
-		2014
-\end{thebibliography}
+
 
 \section{Appendix}
 Matlab codes used in the project:
